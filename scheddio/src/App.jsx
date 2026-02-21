@@ -503,44 +503,36 @@ const CSS = `
   .sch-map-tool.active { background: rgba(93,50,239,.1); border-color: rgba(93,50,239,.25); color: rgb(93,50,239); }
 
   .sch-map-canvas {
-    position: relative; height: 240px;
-    background:
-      linear-gradient(90deg, rgba(93,50,239,.04) 1px, transparent 1px),
-      linear-gradient(0deg, rgba(93,50,239,.04) 1px, transparent 1px),
-      linear-gradient(180deg, #f8f7ff 0%, #eeedf8 100%);
-    background-size: 28px 28px, 28px 28px, 100% 100%;
+    position: relative; height: 260px;
+    background: linear-gradient(180deg, #e8eef8 0%, #dce5f2 100%);
     overflow: hidden;
   }
+  .sch-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* Roads */
-  .sch-map-road {
-    position: absolute; background: rgba(93,50,239,.08); border-radius: 1px;
-  }
-  .sch-map-road.h { height: 2px; }
-  .sch-map-road.v { width: 2px; }
-
-  /* Zone polygon via clip-path */
-  .sch-map-zone {
-    position: absolute; inset: 20px 30px 30px 40px;
-    background: rgba(93,50,239,.1);
-    border: 2px solid rgba(93,50,239,.4);
-    border-radius: 40% 50% 45% 35%;
+  /* Zone overlay – SVG-based, positioned over the map */
+  .sch-map-zone-svg {
     animation: zone-breathe 4s ease-in-out infinite;
-  }
-  .sch-map-zone::after {
-    content: ''; position: absolute; inset: -6px;
-    border: 2px dashed rgba(93,50,239,.18);
-    border-radius: inherit;
-    animation: zone-dash 12s linear infinite;
+    transform-origin: center center;
   }
   @keyframes zone-breathe {
-    0%,100%{transform:scale(1);border-color:rgba(93,50,239,.4)}
-    50%{transform:scale(1.02);border-color:rgba(93,50,239,.6)}
+    0%,100%{transform:scale(1);opacity:.85}
+    50%{transform:scale(1.015);opacity:1}
   }
-  @keyframes zone-dash {
-    0%{stroke-dashoffset:0;border-color:rgba(93,50,239,.18)}
-    50%{border-color:rgba(93,50,239,.3)}
-    100%{border-color:rgba(93,50,239,.18)}
+
+  /* City dot on map */
+  .sch-map-city {
+    position: absolute; display: flex; align-items: center; gap: 4px;
+    pointer-events: none; z-index: 2;
+  }
+  .sch-map-city-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #fff; border: 1.5px solid rgb(93,50,239);
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  }
+  .sch-map-city-name {
+    font-size: 8px; font-weight: 700; color: #3a3a5c;
+    text-shadow: 0 0 3px #fff, 0 0 6px #fff;
+    letter-spacing: .2px; white-space: nowrap;
   }
 
   /* Zone handle dots */
@@ -555,19 +547,18 @@ const CSS = `
 
   /* Center pin with pulse ring */
   .sch-map-pin {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%); z-index: 4;
+    position: absolute; z-index: 4;
     display: flex; align-items: center; justify-content: center;
   }
   .sch-map-pin-icon {
-    width: 28px; height: 28px; border-radius: 50%;
+    width: 26px; height: 26px; border-radius: 50%;
     background: rgb(93,50,239); color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; position: relative; z-index: 2;
+    font-size: 12px; position: relative; z-index: 2;
     box-shadow: 0 3px 12px rgba(93,50,239,.45);
   }
   .sch-map-pin-ring {
-    position: absolute; width: 56px; height: 56px; border-radius: 50%;
+    position: absolute; width: 52px; height: 52px; border-radius: 50%;
     border: 2px solid rgba(93,50,239,.35);
     animation: map-ring 2.4s ease-out infinite;
   }
@@ -580,22 +571,15 @@ const CSS = `
 
   /* Radius line */
   .sch-map-radius {
-    position: absolute; top: 50%; left: 50%;
-    height: 2px; background: linear-gradient(90deg, rgb(93,50,239), rgba(93,50,239,.2));
+    position: absolute; height: 2px;
+    background: linear-gradient(90deg, rgb(93,50,239), rgba(93,50,239,.15));
     transform-origin: left center; z-index: 3;
-    width: 80px;
   }
   .sch-map-radius-label {
     position: absolute; right: -8px; top: -18px;
     font-size: 10px; font-weight: 700; color: rgb(93,50,239);
-    background: rgba(255,255,255,.9); padding: 2px 6px; border-radius: 4px;
-    white-space: nowrap; box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  }
-
-  /* Small location labels on map */
-  .sch-map-label {
-    position: absolute; font-size: 9px; font-weight: 600;
-    color: rgba(93,50,239,.5); letter-spacing: .3px; pointer-events: none;
+    background: rgba(255,255,255,.92); padding: 2px 6px; border-radius: 4px;
+    white-space: nowrap; box-shadow: 0 1px 4px rgba(0,0,0,.1);
   }
 
   /* Bottom bar */
@@ -1106,42 +1090,120 @@ export default function Scheddio() {
                   </div>
                 </div>
                 <div className="sch-map-canvas">
-                  {/* Grid roads */}
-                  <div className="sch-map-road h" style={{top:"30%",left:"10%",width:"80%"}} />
-                  <div className="sch-map-road h" style={{top:"55%",left:"5%",width:"60%"}} />
-                  <div className="sch-map-road h" style={{top:"75%",left:"20%",width:"70%"}} />
-                  <div className="sch-map-road v" style={{left:"25%",top:"15%",height:"70%"}} />
-                  <div className="sch-map-road v" style={{left:"55%",top:"10%",height:"80%"}} />
-                  <div className="sch-map-road v" style={{left:"78%",top:"20%",height:"55%"}} />
+                  {/* South Florida SVG Map */}
+                  <svg className="sch-map-svg" viewBox="0 0 480 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                    {/* Water is the background (set via CSS) */}
 
-                  {/* Map labels */}
-                  <span className="sch-map-label" style={{top:"18%",left:"12%"}}>Downtown</span>
-                  <span className="sch-map-label" style={{top:"40%",left:"62%"}}>Midtown</span>
-                  <span className="sch-map-label" style={{top:"68%",left:"30%"}}>South Bay</span>
-                  <span className="sch-map-label" style={{top:"22%",left:"72%"}}>Northside</span>
+                    {/* Land – South Florida peninsula */}
+                    <path d="
+                      M 0,0 L 340,0 L 345,8 L 348,20 L 350,40 L 352,55
+                      L 355,70 L 356,85 L 358,100 L 359,115
+                      L 360,130 L 362,142 L 363,155 L 362,168
+                      L 358,180 L 352,192 L 344,204 L 332,214
+                      L 318,222 L 300,230 L 280,237
+                      L 258,242 L 235,246 L 210,248 L 185,250
+                      L 160,252 L 130,254 L 100,256 L 70,258 L 40,260
+                      L 0,260 Z
+                    " fill="#f0ece4" stroke="#d8d0c4" strokeWidth="1"/>
 
-                  {/* Zone shape */}
-                  <div className="sch-map-zone" />
+                    {/* Everglades / interior wetlands */}
+                    <path d="
+                      M 0,60 L 120,65 L 180,80 L 220,100
+                      L 260,130 L 280,160 L 270,190
+                      L 240,215 L 200,235 L 160,248
+                      L 100,254 L 40,258 L 0,260 Z
+                    " fill="#e4e8d8" opacity=".5"/>
 
-                  {/* Draggable handle dots on the zone boundary */}
-                  <div className="sch-map-handle" style={{top:"14%",left:"45%"}} />
-                  <div className="sch-map-handle" style={{top:"30%",left:"82%"}} />
-                  <div className="sch-map-handle" style={{top:"72%",left:"78%"}} />
-                  <div className="sch-map-handle" style={{top:"85%",left:"38%"}} />
-                  <div className="sch-map-handle" style={{top:"48%",left:"12%"}} />
+                    {/* Lake Okeechobee hint */}
+                    <ellipse cx="160" cy="28" rx="38" ry="16" fill="#d0daea" stroke="#c0cfe0" strokeWidth=".5"/>
 
-                  {/* Center pin with animated pulse rings */}
-                  <div className="sch-map-pin">
+                    {/* Major highways */}
+                    {/* I-95 – runs near the coast */}
+                    <path d="M 320,0 L 324,30 L 328,60 L 334,90 L 340,120 L 342,150 L 340,175 L 332,200 L 318,222" fill="none" stroke="#c4b8e8" strokeWidth="2" strokeDasharray="6,3" opacity=".7"/>
+                    {/* Florida Turnpike */}
+                    <path d="M 280,0 L 286,35 L 294,70 L 305,105 L 312,140 L 310,170 L 300,200 L 280,230" fill="none" stroke="#c4b8e8" strokeWidth="1.5" strokeDasharray="4,3" opacity=".5"/>
+                    {/* US-1 near coast */}
+                    <path d="M 348,0 L 350,40 L 354,80 L 358,115 L 360,145 L 356,178 L 344,206 L 318,225 L 280,238 L 235,248 L 185,252" fill="none" stroke="#d0c4e0" strokeWidth="1" opacity=".4"/>
+
+                    {/* Highway labels */}
+                    <text x="312" y="82" fontSize="7" fill="#8878b0" fontWeight="700" fontFamily="Sora,sans-serif">I-95</text>
+                    <text x="278" y="62" fontSize="6" fill="#8878b0" fontWeight="600" fontFamily="Sora,sans-serif">TPKE</text>
+
+                    {/* Service zone overlay – polygon over Miami-Dade / Broward / Palm Beach */}
+                    <g className="sch-map-zone-svg">
+                      <polygon points="
+                        290,18 350,15 358,60 362,110 364,155 358,185
+                        345,210 320,225 290,235 255,240
+                        220,242 200,238 210,200 230,160
+                        250,120 265,80 275,45
+                      " fill="rgba(93,50,239,.12)" stroke="rgb(93,50,239)" strokeWidth="2" strokeDasharray="8,4" strokeLinejoin="round"/>
+                      {/* Inner glow */}
+                      <polygon points="
+                        290,18 350,15 358,60 362,110 364,155 358,185
+                        345,210 320,225 290,235 255,240
+                        220,242 200,238 210,200 230,160
+                        250,120 265,80 275,45
+                      " fill="rgba(93,50,239,.06)" stroke="rgba(93,50,239,.3)" strokeWidth="5" strokeLinejoin="round" filter="url(#zone-glow)"/>
+                    </g>
+
+                    {/* Glow filter */}
+                    <defs>
+                      <filter id="zone-glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    </defs>
+
+                    {/* Florida Keys hint */}
+                    <path d="M 185,252 L 165,254 L 140,255 L 115,257 L 90,258 L 70,258" fill="none" stroke="#d8d0c4" strokeWidth="3" strokeLinecap="round" opacity=".6"/>
+                  </svg>
+
+                  {/* City labels positioned over the SVG */}
+                  <div className="sch-map-city" style={{top:"6%",right:"22%"}}>
+                    <div className="sch-map-city-dot" />
+                    <span className="sch-map-city-name">West Palm Beach</span>
+                  </div>
+                  <div className="sch-map-city" style={{top:"22%",right:"18%"}}>
+                    <div className="sch-map-city-dot" />
+                    <span className="sch-map-city-name">Boca Raton</span>
+                  </div>
+                  <div className="sch-map-city" style={{top:"36%",right:"14%"}}>
+                    <div className="sch-map-city-dot" />
+                    <span className="sch-map-city-name">Fort Lauderdale</span>
+                  </div>
+                  <div className="sch-map-city" style={{top:"50%",right:"16%"}}>
+                    <div className="sch-map-city-dot" />
+                    <span className="sch-map-city-name">Hollywood</span>
+                  </div>
+                  <div className="sch-map-city" style={{top:"62%",right:"18%"}}>
+                    <div className="sch-map-city-dot" style={{width:8,height:8,borderWidth:2}} />
+                    <span className="sch-map-city-name" style={{fontSize:9,fontWeight:800}}>Miami</span>
+                  </div>
+                  <div className="sch-map-city" style={{top:"80%",right:"28%"}}>
+                    <div className="sch-map-city-dot" />
+                    <span className="sch-map-city-name">Homestead</span>
+                  </div>
+
+                  {/* Draggable handle dots on zone boundary */}
+                  <div className="sch-map-handle" style={{top:"5%",left:"62%"}} />
+                  <div className="sch-map-handle" style={{top:"24%",right:"16%"}} />
+                  <div className="sch-map-handle" style={{top:"60%",right:"14%"}} />
+                  <div className="sch-map-handle" style={{top:"86%",left:"50%"}} />
+                  <div className="sch-map-handle" style={{top:"65%",left:"38%"}} />
+                  <div className="sch-map-handle" style={{top:"30%",left:"48%"}} />
+
+                  {/* Center pin on Miami with animated pulse rings */}
+                  <div className="sch-map-pin" style={{top:"62%",right:"18%",transform:"translate(50%,-50%)"}}>
                     <div className="sch-map-pin-icon">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
                     </div>
                     <div className="sch-map-pin-ring" />
                     <div className="sch-map-pin-ring" />
                     <div className="sch-map-pin-ring" />
                   </div>
 
-                  {/* Radius indicator line */}
-                  <div className="sch-map-radius">
+                  {/* Radius indicator line from Miami westward */}
+                  <div className="sch-map-radius" style={{top:"62%",right:"18%",width:70,transform:"translate(0,-50%) rotate(200deg)"}}>
                     <span className="sch-map-radius-label">25 mi</span>
                   </div>
                 </div>

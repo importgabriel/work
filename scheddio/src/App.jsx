@@ -1203,7 +1203,7 @@ export default function Scheddio() {
                   </div>
 
                   {/* Radius indicator line from Miami westward */}
-                  <div className="sch-map-radius" style={{top:"62%",right:"18%",width:70,transform:"translate(0,-50%) rotate(200deg)"}}>
+                  <div className="sch-map-radius" style={{top:"62%",right:"18%",width:70,transform:"translate(0,-50%)"}}>
                     <span className="sch-map-radius-label">25 mi</span>
                   </div>
                 </div>

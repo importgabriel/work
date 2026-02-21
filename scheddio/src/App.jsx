@@ -62,6 +62,12 @@ const features = [
     desc: "Follow-ups, delivery reminders, and invoices take care of themselves. The boring stuff between shoots just gets done.",
     highlights: ["Auto-send invoices", "Delivery reminders", "Follow-up sequences"],
   },
+  {
+    id: "territory",
+    title: "Territory Configuration",
+    desc: "Map out exactly how far your photographers can travel. Draw service zones, set radius limits, and update boundaries anytime as your coverage grows.",
+    highlights: ["Draw custom service zones", "Set max travel radius", "Update boundaries in real time"],
+  },
 ];
 
 const steps = [
@@ -480,6 +486,140 @@ const CSS = `
   @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.012)} }
   @keyframes pipeline-flow { 0%{left:-40px} 100%{left:100%} }
 
+  /* ── Territory / Map Mockup ── */
+  .sch-map { overflow: hidden; }
+  .sch-map-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid #f0f0f3;
+  }
+  .sch-map-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-map-tools { display: flex; gap: 6px; }
+  .sch-map-tool {
+    width: 30px; height: 30px; border-radius: 7px; display: flex;
+    align-items: center; justify-content: center; font-size: 13px;
+    background: #f5f5f9; border: 1px solid #eee; color: #888; cursor: pointer;
+    transition: all .2s;
+  }
+  .sch-map-tool.active { background: rgba(93,50,239,.1); border-color: rgba(93,50,239,.25); color: rgb(93,50,239); }
+
+  .sch-map-canvas {
+    position: relative; height: 240px;
+    background:
+      linear-gradient(90deg, rgba(93,50,239,.04) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(93,50,239,.04) 1px, transparent 1px),
+      linear-gradient(180deg, #f8f7ff 0%, #eeedf8 100%);
+    background-size: 28px 28px, 28px 28px, 100% 100%;
+    overflow: hidden;
+  }
+
+  /* Roads */
+  .sch-map-road {
+    position: absolute; background: rgba(93,50,239,.08); border-radius: 1px;
+  }
+  .sch-map-road.h { height: 2px; }
+  .sch-map-road.v { width: 2px; }
+
+  /* Zone polygon via clip-path */
+  .sch-map-zone {
+    position: absolute; inset: 20px 30px 30px 40px;
+    background: rgba(93,50,239,.1);
+    border: 2px solid rgba(93,50,239,.4);
+    border-radius: 40% 50% 45% 35%;
+    animation: zone-breathe 4s ease-in-out infinite;
+  }
+  .sch-map-zone::after {
+    content: ''; position: absolute; inset: -6px;
+    border: 2px dashed rgba(93,50,239,.18);
+    border-radius: inherit;
+    animation: zone-dash 12s linear infinite;
+  }
+  @keyframes zone-breathe {
+    0%,100%{transform:scale(1);border-color:rgba(93,50,239,.4)}
+    50%{transform:scale(1.02);border-color:rgba(93,50,239,.6)}
+  }
+  @keyframes zone-dash {
+    0%{stroke-dashoffset:0;border-color:rgba(93,50,239,.18)}
+    50%{border-color:rgba(93,50,239,.3)}
+    100%{border-color:rgba(93,50,239,.18)}
+  }
+
+  /* Zone handle dots */
+  .sch-map-handle {
+    position: absolute; width: 10px; height: 10px;
+    background: #fff; border: 2.5px solid rgb(93,50,239);
+    border-radius: 50%; z-index: 3;
+    box-shadow: 0 2px 6px rgba(93,50,239,.3);
+    transition: transform .2s;
+  }
+  .sch-map-handle:hover { transform: scale(1.4); }
+
+  /* Center pin with pulse ring */
+  .sch-map-pin {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sch-map-pin-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgb(93,50,239); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; position: relative; z-index: 2;
+    box-shadow: 0 3px 12px rgba(93,50,239,.45);
+  }
+  .sch-map-pin-ring {
+    position: absolute; width: 56px; height: 56px; border-radius: 50%;
+    border: 2px solid rgba(93,50,239,.35);
+    animation: map-ring 2.4s ease-out infinite;
+  }
+  .sch-map-pin-ring:nth-child(3) { animation-delay: .8s; }
+  .sch-map-pin-ring:nth-child(4) { animation-delay: 1.6s; }
+  @keyframes map-ring {
+    0%{transform:scale(.5);opacity:.8}
+    100%{transform:scale(2.2);opacity:0}
+  }
+
+  /* Radius line */
+  .sch-map-radius {
+    position: absolute; top: 50%; left: 50%;
+    height: 2px; background: linear-gradient(90deg, rgb(93,50,239), rgba(93,50,239,.2));
+    transform-origin: left center; z-index: 3;
+    width: 80px;
+  }
+  .sch-map-radius-label {
+    position: absolute; right: -8px; top: -18px;
+    font-size: 10px; font-weight: 700; color: rgb(93,50,239);
+    background: rgba(255,255,255,.9); padding: 2px 6px; border-radius: 4px;
+    white-space: nowrap; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  /* Small location labels on map */
+  .sch-map-label {
+    position: absolute; font-size: 9px; font-weight: 600;
+    color: rgba(93,50,239,.5); letter-spacing: .3px; pointer-events: none;
+  }
+
+  /* Bottom bar */
+  .sch-map-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 20px; border-top: 1px solid #f0f0f3; background: #fafafa;
+  }
+  .sch-map-bar-zone {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: #555; font-weight: 500;
+  }
+  .sch-map-bar-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: rgb(93,50,239);
+    box-shadow: 0 0 0 3px rgba(93,50,239,.15);
+  }
+  .sch-map-bar-radius {
+    font-size: 11px; color: #888; margin-left: auto;
+  }
+  .sch-map-bar-radius strong { color: rgb(93,50,239); font-weight: 700; }
+  .sch-map-bar-btn {
+    font-size: 11px; font-weight: 600; color: #fff; background: rgb(93,50,239);
+    padding: 5px 14px; border-radius: 6px; margin-left: 6px;
+  }
+
   /* ═══════════════════════ HOW IT WORKS ═══════════════════════ */
   .sch-how { background: linear-gradient(180deg, #fff 0%, #f4f2ff 100%); }
   .sch-how .sch-section-head { align-items: center; text-align: center; max-width: 100%; }
@@ -655,6 +795,7 @@ export default function Scheddio() {
   const [feat1Ref, feat1Vis] = useInView(0.15);
   const [feat2Ref, feat2Vis] = useInView(0.15);
   const [feat3Ref, feat3Vis] = useInView(0.15);
+  const [feat4Ref, feat4Vis] = useInView(0.15);
   const [howRef, howVis] = useInView();
   const [statsRef, statsVis] = useInView();
   const [testRef, testVis] = useInView();
@@ -933,6 +1074,84 @@ export default function Scheddio() {
                       <span className="sch-pipe-event-time">Pending</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* ── Row 4: Territory Configuration (reversed) ── */}
+          <div ref={feat4Ref} className={`sch-showcase-row reverse ${feat4Vis ? "in" : ""}`}>
+            <div className="sch-showcase-text">
+              <div className="sch-showcase-tag">Territory</div>
+              <h3 className="sch-showcase-title">{features[3].title}</h3>
+              <p className="sch-showcase-desc">{features[3].desc}</p>
+              <ul className="sch-showcase-highlights">
+                {features[3].highlights.map((h, i) => <li key={i}>{h}</li>)}
+              </ul>
+            </div>
+            <div className="sch-showcase-mockup">
+              <div className="sch-showcase-card sch-map">
+                <div className="sch-showcase-card-glow" />
+                <div className="sch-map-header">
+                  <span className="sch-map-title">Service Territory</span>
+                  <div className="sch-map-tools">
+                    <div className="sch-map-tool active" title="Draw zone">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                    </div>
+                    <div className="sch-map-tool" title="Radius">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/></svg>
+                    </div>
+                    <div className="sch-map-tool" title="Reset">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="sch-map-canvas">
+                  {/* Grid roads */}
+                  <div className="sch-map-road h" style={{top:"30%",left:"10%",width:"80%"}} />
+                  <div className="sch-map-road h" style={{top:"55%",left:"5%",width:"60%"}} />
+                  <div className="sch-map-road h" style={{top:"75%",left:"20%",width:"70%"}} />
+                  <div className="sch-map-road v" style={{left:"25%",top:"15%",height:"70%"}} />
+                  <div className="sch-map-road v" style={{left:"55%",top:"10%",height:"80%"}} />
+                  <div className="sch-map-road v" style={{left:"78%",top:"20%",height:"55%"}} />
+
+                  {/* Map labels */}
+                  <span className="sch-map-label" style={{top:"18%",left:"12%"}}>Downtown</span>
+                  <span className="sch-map-label" style={{top:"40%",left:"62%"}}>Midtown</span>
+                  <span className="sch-map-label" style={{top:"68%",left:"30%"}}>South Bay</span>
+                  <span className="sch-map-label" style={{top:"22%",left:"72%"}}>Northside</span>
+
+                  {/* Zone shape */}
+                  <div className="sch-map-zone" />
+
+                  {/* Draggable handle dots on the zone boundary */}
+                  <div className="sch-map-handle" style={{top:"14%",left:"45%"}} />
+                  <div className="sch-map-handle" style={{top:"30%",left:"82%"}} />
+                  <div className="sch-map-handle" style={{top:"72%",left:"78%"}} />
+                  <div className="sch-map-handle" style={{top:"85%",left:"38%"}} />
+                  <div className="sch-map-handle" style={{top:"48%",left:"12%"}} />
+
+                  {/* Center pin with animated pulse rings */}
+                  <div className="sch-map-pin">
+                    <div className="sch-map-pin-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    </div>
+                    <div className="sch-map-pin-ring" />
+                    <div className="sch-map-pin-ring" />
+                    <div className="sch-map-pin-ring" />
+                  </div>
+
+                  {/* Radius indicator line */}
+                  <div className="sch-map-radius">
+                    <span className="sch-map-radius-label">25 mi</span>
+                  </div>
+                </div>
+                <div className="sch-map-bar">
+                  <div className="sch-map-bar-zone">
+                    <div className="sch-map-bar-dot" />
+                    South Florida Zone
+                  </div>
+                  <span className="sch-map-bar-radius">Radius: <strong>25 mi</strong></span>
+                  <span className="sch-map-bar-btn">Save Zone</span>
                 </div>
               </div>
             </div>

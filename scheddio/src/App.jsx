@@ -44,9 +44,24 @@ function Counter({ to, prefix = "", suffix = "", animate }) {
 
 /* ── Data ── */
 const features = [
-  { icon: "📅", title: "Smart Scheduling", desc: "Your availability gets matched to what agents actually need. No more ping-ponging back and forth just to lock in a time slot." },
-  { icon: "👤", title: "Client Portal", desc: "Clients can request shoots, review previews, and grab their finals from a clean branded portal. No email chains needed." },
-  { icon: "⚡", title: "Workflow Automation", desc: "Follow-ups, delivery reminders, and invoices take care of themselves. The boring stuff between shoots just gets done." },
+  {
+    id: "scheduling",
+    title: "Smart Scheduling",
+    desc: "Your availability gets matched to what agents actually need. No more ping-ponging back and forth just to lock in a time slot.",
+    highlights: ["Auto-sync with your calendar", "Color-coded shoot types", "Instant booking confirmations"],
+  },
+  {
+    id: "portal",
+    title: "Client Portal",
+    desc: "Clients can request shoots, review previews, and grab their finals from a clean branded portal. No email chains needed.",
+    highlights: ["Branded gallery delivery", "One-click approvals", "Automatic watermarking"],
+  },
+  {
+    id: "automation",
+    title: "Workflow Automation",
+    desc: "Follow-ups, delivery reminders, and invoices take care of themselves. The boring stuff between shoots just gets done.",
+    highlights: ["Auto-send invoices", "Delivery reminders", "Follow-up sequences"],
+  },
 ];
 
 const steps = [
@@ -278,43 +293,192 @@ const CSS = `
   .sch-section-title { font-size: 43px; font-weight: 800; color: #0f0f1a; letter-spacing: -1.9px; line-height: 1.14; }
   .sch-section-sub { font-size: 16px; color: #6b6b7d; line-height: 1.65; max-width: 440px; }
 
-  /* ═══════════════════════ FEATURES ═══════════════════════ */
+  /* ═══════════════════════ FEATURES / SHOWCASE ═══════════════════════ */
   .sch-features { background: #fff; }
   .sch-features::after {
     content: ''; position: absolute; inset: 0;
     background-image: radial-gradient(circle, rgba(93,50,239,.055) 1px, transparent 1px);
     background-size: 48px 48px; pointer-events: none; opacity: .6;
   }
-  .sch-features-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; margin-top: 58px; max-width: 1060px; position: relative; z-index: 1; }
 
-  .sch-feat-card {
-    background: rgba(255,255,255,.95); border: 1px solid #eeeef1; border-radius: 18px;
-    padding: 34px 28px; position: relative; overflow: hidden;
-    display: flex; flex-direction: column;
+  /* Showcase layout */
+  .sch-showcase { display: flex; flex-direction: column; gap: 96px; margin-top: 64px; position: relative; z-index: 1; }
+
+  .sch-showcase-row {
+    display: flex; align-items: center; gap: 56px;
     opacity: 0; transform: translateY(30px);
-    transition: all .6s cubic-bezier(.16,1,.3,1);
+    transition: all .72s cubic-bezier(.16,1,.3,1);
   }
-  .sch-feat-card:nth-child(1) { transition-delay: .2s; }
-  .sch-feat-card:nth-child(2) { transition-delay: .32s; }
-  .sch-feat-card:nth-child(3) { transition-delay: .44s; }
-  .sch-feat-card.in { opacity: 1; transform: translateY(0); }
+  .sch-showcase-row.in { opacity: 1; transform: translateY(0); }
+  .sch-showcase-row.reverse { flex-direction: row-reverse; }
 
-  .sch-feat-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, rgb(93,50,239), rgb(150,100,255));
-    opacity: 0; transition: opacity .3s;
+  .sch-showcase-text { flex: 1; min-width: 0; }
+  .sch-showcase-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; color: rgb(93,50,239); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.6px; margin-bottom: 14px;
   }
-  .sch-feat-card.in:hover {
-    transition-delay: 0s; transition-duration: .28s;
-    transform: translateY(-4px);
-    box-shadow: 0 18px 44px rgba(0,0,0,.08);
-    border-color: rgba(93,50,239,.2);
+  .sch-showcase-tag::before { content: ''; width: 14px; height: 2px; background: rgb(93,50,239); border-radius: 1px; }
+  .sch-showcase-title { font-size: 32px; font-weight: 800; color: #0f0f1a; letter-spacing: -1.2px; line-height: 1.18; margin-bottom: 14px; }
+  .sch-showcase-desc { font-size: 15px; color: #6b6b7d; line-height: 1.7; margin-bottom: 22px; max-width: 420px; }
+  .sch-showcase-highlights { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .sch-showcase-highlights li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #444; font-weight: 500;
   }
-  .sch-feat-card.in:hover::before { opacity: 1; }
+  .sch-showcase-highlights li::before {
+    content: ''; width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(93,50,239,.1);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 10l3 3 5-5' stroke='%235D32EF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
 
-  .sch-feat-icon { width: 48px; height: 48px; background: rgba(93,50,239,.08); border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 21px; margin-bottom: 20px; }
-  .sch-feat-title { font-size: 17px; font-weight: 700; color: #0f0f1a; margin-bottom: 10px; letter-spacing: -.3px; }
-  .sch-feat-desc { font-size: 14px; color: #6b6b7d; line-height: 1.65; flex: 1; }
+  .sch-showcase-mockup { flex: 1; display: flex; justify-content: center; min-width: 0; }
+
+  /* Shared mockup card */
+  .sch-showcase-card {
+    width: 100%; max-width: 480px;
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 24px 56px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.04);
+    border: 1px solid rgba(0,0,0,.06); overflow: hidden;
+    position: relative;
+  }
+  .sch-showcase-card-glow {
+    position: absolute; inset: -24px;
+    background: radial-gradient(ellipse, rgba(93,50,239,.09), transparent 64%);
+    border-radius: 40px; filter: blur(26px); pointer-events: none;
+  }
+
+  /* ── Scheduling Mockup ── */
+  .sch-sched { animation: float 5.8s ease-in-out infinite; }
+  .sch-sched-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #f0f0f3;
+  }
+  .sch-sched-month { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-sched-toggle { display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
+  .sch-sched-toggle span {
+    font-size: 11px; font-weight: 600; padding: 5px 12px; color: #999; cursor: pointer; transition: all .2s;
+  }
+  .sch-sched-toggle span.active { background: rgb(93,50,239); color: #fff; }
+
+  .sch-sched-days { display: flex; padding: 10px 20px 6px; gap: 0; }
+  .sch-sched-day {
+    flex: 1; text-align: center; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .5px; color: #bbb;
+  }
+  .sch-sched-day.today { color: rgb(93,50,239); }
+
+  .sch-sched-nums { display: flex; padding: 2px 20px 12px; gap: 0; }
+  .sch-sched-num {
+    flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #555;
+    padding: 4px 0;
+  }
+  .sch-sched-num.today {
+    background: rgb(93,50,239); color: #fff; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(93,50,239,.35);
+  }
+
+  .sch-sched-slots { padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .sch-sched-slot {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; background: #fafafa; border-radius: 10px;
+    border: 1px solid #f0f0f3; transition: all .2s;
+  }
+  .sch-sched-slot:hover { border-color: rgba(93,50,239,.2); background: rgba(93,50,239,.02); }
+  .sch-sched-slot-bar { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; }
+  .sch-sched-slot-time { font-size: 11px; font-weight: 700; color: #1a1a2e; min-width: 52px; }
+  .sch-sched-slot-name { font-size: 12px; color: #666; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sch-sched-slot-pill {
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+
+  /* ── Client Portal / Gallery Mockup ── */
+  .sch-gallery { animation: breathe 6s ease-in-out infinite; }
+  .sch-gallery-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #f0f0f3;
+  }
+  .sch-gallery-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-gallery-count { font-size: 11px; color: #999; margin-left: 8px; font-weight: 500; }
+  .sch-gallery-upload {
+    font-size: 11px; font-weight: 600; color: rgb(93,50,239); background: rgba(93,50,239,.08);
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .sch-gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px; }
+  .sch-gallery-thumb {
+    position: relative; border-radius: 10px; overflow: hidden;
+    aspect-ratio: 4/3; cursor: pointer; transition: all .25s;
+  }
+  .sch-gallery-thumb:hover { transform: scale(1.03); }
+  .sch-gallery-thumb.selected { outline: 2.5px solid rgb(93,50,239); outline-offset: -2.5px; }
+  .sch-gallery-img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .sch-gallery-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .sch-gallery-badge.approved { background: rgba(34,197,94,.9); color: #fff; }
+  .sch-gallery-badge.review { background: rgba(245,158,11,.9); color: #fff; }
+  .sch-gallery-badge.new { background: rgba(93,50,239,.9); color: #fff; }
+
+  .sch-gallery-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; border-top: 1px solid #f0f0f3; background: #fafafa;
+  }
+  .sch-gallery-bar-stat { font-size: 11px; color: #888; }
+  .sch-gallery-bar-stat strong { color: #1a1a2e; font-weight: 700; }
+  .sch-gallery-bar-btn {
+    font-size: 11px; font-weight: 600; color: #fff; background: rgb(93,50,239);
+    padding: 5px 14px; border-radius: 6px;
+  }
+
+  /* ── Workflow / Pipeline Mockup ── */
+  .sch-pipe { padding: 28px 20px 24px; }
+  .sch-pipe-label { font-size: 12px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; text-align: center; }
+  .sch-pipe-sub { font-size: 10px; color: #999; margin-bottom: 24px; text-align: center; }
+
+  .sch-pipe-flow { display: flex; align-items: center; gap: 0; padding: 0 8px; }
+  .sch-pipe-step {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    position: relative; z-index: 1;
+  }
+  .sch-pipe-node {
+    width: 46px; height: 46px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 16px;
+    transition: all .3s;
+  }
+  .sch-pipe-node.done { background: rgba(34,197,94,.12); color: #16a34a; border: 2px solid rgba(34,197,94,.3); }
+  .sch-pipe-node.active { background: rgba(93,50,239,.12); color: rgb(93,50,239); border: 2px solid rgba(93,50,239,.3); animation: pulse 2.2s ease-in-out infinite; }
+  .sch-pipe-node.waiting { background: #f5f5f9; color: #ccc; border: 2px solid #eee; }
+  .sch-pipe-step-label { font-size: 10px; font-weight: 600; color: #555; text-align: center; line-height: 1.3; }
+
+  .sch-pipe-connector {
+    width: 100%; height: 3px; background: #eee; position: relative;
+    flex-shrink: 1; min-width: 20px; border-radius: 2px; overflow: hidden;
+    margin: 0 -4px; align-self: flex-start; margin-top: 22px;
+  }
+  .sch-pipe-connector.active::after {
+    content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 40px;
+    background: linear-gradient(90deg, transparent, rgb(93,50,239), transparent);
+    border-radius: 2px;
+    animation: pipeline-flow 2s ease-in-out infinite;
+  }
+  .sch-pipe-connector.done { background: rgba(34,197,94,.3); }
+
+  .sch-pipe-events { margin-top: 24px; display: flex; flex-direction: column; gap: 6px; padding: 0 4px; }
+  .sch-pipe-event {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: #f7f7fb; border-radius: 8px;
+    border: 1px solid #f0f0f3;
+  }
+  .sch-pipe-event-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .sch-pipe-event-text { font-size: 11px; color: #666; flex: 1; }
+  .sch-pipe-event-time { font-size: 10px; color: #bbb; font-weight: 500; white-space: nowrap; }
+
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.012)} }
+  @keyframes pipeline-flow { 0%{left:-40px} 100%{left:100%} }
 
   /* ═══════════════════════ HOW IT WORKS ═══════════════════════ */
   .sch-how { background: linear-gradient(180deg, #fff 0%, #f4f2ff 100%); }
@@ -453,11 +617,15 @@ const CSS = `
     .sch-hero-h1 { font-size: 44px; }
     .sch-nav { padding: 18px 32px; }
     .sch-nav.scrolled { padding: 12px 32px; }
+    .sch-showcase-row, .sch-showcase-row.reverse { flex-direction: column; gap: 36px; }
+    .sch-showcase-text { text-align: center; }
+    .sch-showcase-desc { max-width: 100%; }
+    .sch-showcase-highlights { align-items: center; }
+    .sch-showcase-card { max-width: 420px; }
+    .sch-showcase { gap: 72px; }
   }
   @media (max-width: 720px) {
     .sch-section { padding: 72px 32px; }
-    .sch-features-grid { grid-template-columns: 1fr; }
-    .sch-feat-card:nth-child(2) { margin-top: 0; }
     .sch-stats-grid { flex-wrap: wrap; gap: 14px; }
     .sch-stat-item { flex: 1 1 calc(50% - 7px); }
     .sch-steps { flex-direction: column; gap: 36px; align-items: center; }
@@ -469,6 +637,12 @@ const CSS = `
     .sch-footer { flex-direction: column; gap: 20px; text-align: center; }
     .sch-nav-links { display: none; }
     .sch-trust-logos { gap: 28px; }
+    .sch-showcase-title { font-size: 26px; }
+    .sch-showcase-card { max-width: 340px; }
+    .sch-showcase { gap: 56px; }
+    .sch-pipe-flow { gap: 0; }
+    .sch-pipe-node { width: 38px; height: 38px; font-size: 14px; }
+    .sch-pipe-connector { margin-top: 18px; }
   }
 `;
 
@@ -478,6 +652,9 @@ export default function Scheddio() {
   const [mounted, setMounted] = useState(false);
 
   const [featRef, featVis] = useInView();
+  const [feat1Ref, feat1Vis] = useInView(0.15);
+  const [feat2Ref, feat2Vis] = useInView(0.15);
+  const [feat3Ref, feat3Vis] = useInView(0.15);
   const [howRef, howVis] = useInView();
   const [statsRef, statsVis] = useInView();
   const [testRef, testVis] = useInView();
@@ -591,21 +768,175 @@ export default function Scheddio() {
         </div>
       </div>
 
-      {/* ── Features ── */}
+      {/* ── Features / Showcase ── */}
       <section className="sch-section sch-features" ref={featRef}>
         <div className={`sch-section-head ${featVis ? "in" : ""}`}>
           <div className="sch-section-tag">Features</div>
           <h2 className="sch-section-title">Everything you need<br />to grow your business.</h2>
           <p className="sch-section-sub">Built specifically for real estate photographers who want to spend less time managing and more time creating.</p>
         </div>
-        <div className="sch-features-grid">
-          {features.map((f, i) => (
-            <div key={i} className={`sch-feat-card ${featVis ? "in" : ""}`}>
-              <div className="sch-feat-icon">{f.icon}</div>
-              <h3 className="sch-feat-title">{f.title}</h3>
-              <p className="sch-feat-desc">{f.desc}</p>
+
+        <div className="sch-showcase">
+          {/* ── Row 1: Smart Scheduling ── */}
+          <div ref={feat1Ref} className={`sch-showcase-row ${feat1Vis ? "in" : ""}`}>
+            <div className="sch-showcase-text">
+              <div className="sch-showcase-tag">Scheduling</div>
+              <h3 className="sch-showcase-title">{features[0].title}</h3>
+              <p className="sch-showcase-desc">{features[0].desc}</p>
+              <ul className="sch-showcase-highlights">
+                {features[0].highlights.map((h, i) => <li key={i}>{h}</li>)}
+              </ul>
             </div>
-          ))}
+            <div className="sch-showcase-mockup">
+              <div className="sch-showcase-card sch-sched">
+                <div className="sch-showcase-card-glow" />
+                <div className="sch-sched-header">
+                  <span className="sch-sched-month">January 2026</span>
+                  <div className="sch-sched-toggle">
+                    <span>Day</span>
+                    <span className="active">Week</span>
+                    <span>Month</span>
+                  </div>
+                </div>
+                <div className="sch-sched-days">
+                  {["Mon","Tue","Wed","Thu","Fri"].map(d => (
+                    <span key={d} className={`sch-sched-day ${d === "Tue" ? "today" : ""}`}>{d}</span>
+                  ))}
+                </div>
+                <div className="sch-sched-nums">
+                  {[26,27,28,29,30].map(n => (
+                    <span key={n} className={`sch-sched-num ${n === 27 ? "today" : ""}`}>{n}</span>
+                  ))}
+                </div>
+                <div className="sch-sched-slots">
+                  <div className="sch-sched-slot">
+                    <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
+                    <div className="sch-sched-slot-time">9:00 AM</div>
+                    <div className="sch-sched-slot-name">Martinez Residence</div>
+                    <span className="sch-sched-slot-pill confirmed">Confirmed</span>
+                  </div>
+                  <div className="sch-sched-slot">
+                    <div className="sch-sched-slot-bar" style={{background:"#f59e0b"}} />
+                    <div className="sch-sched-slot-time">1:30 PM</div>
+                    <div className="sch-sched-slot-name">Luxury Condo 4B</div>
+                    <span className="sch-sched-slot-pill pending">Pending</span>
+                  </div>
+                  <div className="sch-sched-slot">
+                    <div className="sch-sched-slot-bar" style={{background:"#22c55e"}} />
+                    <div className="sch-sched-slot-time">4:00 PM</div>
+                    <div className="sch-sched-slot-name">Downtown Loft</div>
+                    <span className="sch-sched-slot-pill upcoming">Upcoming</span>
+                  </div>
+                  <div className="sch-sched-slot">
+                    <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
+                    <div className="sch-sched-slot-time">6:00 PM</div>
+                    <div className="sch-sched-slot-name">Sunset Villa Shoot</div>
+                    <span className="sch-sched-slot-pill confirmed">Confirmed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Row 2: Client Portal (reversed) ── */}
+          <div ref={feat2Ref} className={`sch-showcase-row reverse ${feat2Vis ? "in" : ""}`}>
+            <div className="sch-showcase-text">
+              <div className="sch-showcase-tag">Portal</div>
+              <h3 className="sch-showcase-title">{features[1].title}</h3>
+              <p className="sch-showcase-desc">{features[1].desc}</p>
+              <ul className="sch-showcase-highlights">
+                {features[1].highlights.map((h, i) => <li key={i}>{h}</li>)}
+              </ul>
+            </div>
+            <div className="sch-showcase-mockup">
+              <div className="sch-showcase-card sch-gallery">
+                <div className="sch-showcase-card-glow" />
+                <div className="sch-gallery-header">
+                  <div style={{display:"flex",alignItems:"baseline"}}>
+                    <span className="sch-gallery-title">Property Gallery</span>
+                    <span className="sch-gallery-count">24 photos</span>
+                  </div>
+                  <span className="sch-gallery-upload">+ Upload</span>
+                </div>
+                <div className="sch-gallery-grid">
+                  <div className="sch-gallery-thumb selected">
+                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #e8dff5 0%, #c4b5e0 100%)"}} />
+                    <span className="sch-gallery-badge approved">Approved</span>
+                  </div>
+                  <div className="sch-gallery-thumb">
+                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #d4e7fe 0%, #a8c8f0 100%)"}} />
+                    <span className="sch-gallery-badge approved">Approved</span>
+                  </div>
+                  <div className="sch-gallery-thumb">
+                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #fde8d0 0%, #f0c89a 100%)"}} />
+                    <span className="sch-gallery-badge review">In Review</span>
+                  </div>
+                  <div className="sch-gallery-thumb">
+                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #d5f5e3 0%, #a3e4bc 100%)"}} />
+                    <span className="sch-gallery-badge new">New</span>
+                  </div>
+                </div>
+                <div className="sch-gallery-bar">
+                  <span className="sch-gallery-bar-stat"><strong>18</strong> approved · <strong>4</strong> in review · <strong>2</strong> new</span>
+                  <span className="sch-gallery-bar-btn">Send to Client</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Row 3: Workflow Automation ── */}
+          <div ref={feat3Ref} className={`sch-showcase-row ${feat3Vis ? "in" : ""}`}>
+            <div className="sch-showcase-text">
+              <div className="sch-showcase-tag">Automation</div>
+              <h3 className="sch-showcase-title">{features[2].title}</h3>
+              <p className="sch-showcase-desc">{features[2].desc}</p>
+              <ul className="sch-showcase-highlights">
+                {features[2].highlights.map((h, i) => <li key={i}>{h}</li>)}
+              </ul>
+            </div>
+            <div className="sch-showcase-mockup">
+              <div className="sch-showcase-card">
+                <div className="sch-showcase-card-glow" />
+                <div className="sch-pipe">
+                  <div className="sch-pipe-label">Workflow: Post-Shoot Delivery</div>
+                  <div className="sch-pipe-sub">Automatically triggered after shoot completion</div>
+                  <div className="sch-pipe-flow">
+                    <div className="sch-pipe-step">
+                      <div className="sch-pipe-node done">✓</div>
+                      <div className="sch-pipe-step-label">Shoot<br/>Complete</div>
+                    </div>
+                    <div className="sch-pipe-connector done" />
+                    <div className="sch-pipe-step">
+                      <div className="sch-pipe-node done">✓</div>
+                      <div className="sch-pipe-step-label">Auto<br/>Edit</div>
+                    </div>
+                    <div className="sch-pipe-connector active" />
+                    <div className="sch-pipe-step">
+                      <div className="sch-pipe-node active">→</div>
+                      <div className="sch-pipe-step-label">Deliver &<br/>Invoice</div>
+                    </div>
+                  </div>
+                  <div className="sch-pipe-events">
+                    <div className="sch-pipe-event">
+                      <div className="sch-pipe-event-dot" style={{background:"#22c55e"}} />
+                      <span className="sch-pipe-event-text">Photos edited and watermarked</span>
+                      <span className="sch-pipe-event-time">2 min ago</span>
+                    </div>
+                    <div className="sch-pipe-event">
+                      <div className="sch-pipe-event-dot" style={{background:"rgb(93,50,239)"}} />
+                      <span className="sch-pipe-event-text">Gallery link sent to client</span>
+                      <span className="sch-pipe-event-time">Just now</span>
+                    </div>
+                    <div className="sch-pipe-event">
+                      <div className="sch-pipe-event-dot" style={{background:"#f59e0b"}} />
+                      <span className="sch-pipe-event-text">Invoice #1042 queued for delivery</span>
+                      <span className="sch-pipe-event-time">Pending</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

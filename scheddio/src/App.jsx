@@ -51,22 +51,22 @@ const features = [
     highlights: ["Auto-sync with your calendar", "Color-coded shoot types", "Instant booking confirmations"],
   },
   {
-    id: "portal",
-    title: "Client Portal",
-    desc: "Clients can request shoots, review previews, and grab their finals from a clean branded portal. No email chains needed.",
-    highlights: ["Branded gallery delivery", "One-click approvals", "Automatic watermarking"],
-  },
-  {
-    id: "automation",
-    title: "Workflow Automation",
-    desc: "Follow-ups, delivery reminders, and invoices take care of themselves. The boring stuff between shoots just gets done.",
-    highlights: ["Auto-send invoices", "Delivery reminders", "Follow-up sequences"],
+    id: "team",
+    title: "Team Collaboration",
+    desc: "Coordinate your entire crew from one place. See who's available, assign shoots, and track everyone's workload in real time.",
+    highlights: ["Live availability status", "Drag-and-drop assignments", "Role-based permissions"],
   },
   {
     id: "territory",
-    title: "Territory Configuration",
-    desc: "Map out exactly how far your photographers can travel. Draw service zones, set radius limits, and update boundaries anytime as your coverage grows.",
+    title: "Customizable Map Regions",
+    desc: "Map out exactly where your team operates. Draw service zones, set radius limits, and update boundaries anytime as your coverage grows.",
     highlights: ["Draw custom service zones", "Set max travel radius", "Update boundaries in real time"],
+  },
+  {
+    id: "ai",
+    title: "AI Business Growth",
+    desc: "Smart insights powered by AI that help you optimize pricing, find new markets, and grow revenue — automatically.",
+    highlights: ["AI pricing recommendations", "Market opportunity alerts", "Revenue growth tracking"],
   },
 ];
 
@@ -83,12 +83,6 @@ const stats = [
   { to: 2.4, prefix: "$", suffix: "M", label: "Revenue facilitated" },
 ];
 
-const bookings = [
-  { name: "The Martinez Residence", loc: "9:00 AM · 123 Oak St", color: "rgb(93,50,239)", status: "Confirmed", sc: "confirmed" },
-  { name: "Luxury Condo, Unit 4B", loc: "1:30 PM · 456 Pine Ave", color: "#f59e0b", status: "Pending", sc: "pending" },
-  { name: "Downtown Loft Listing", loc: "4:00 PM · 789 Main Blvd", color: "#22c55e", status: "Upcoming", sc: "upcoming" },
-];
-
 /* ── Styles ── */
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
@@ -97,6 +91,9 @@ const CSS = `
   html, body, #root { width: 100%; min-height: 100%; background: #fff; overflow-x: hidden; margin: 0; padding: 0; }
 
   .sch { font-family: 'Sora', sans-serif; background: #fff; width: 100%; min-height: 100vh; overflow-x: hidden; color: #1a1a2e; -webkit-font-smoothing: antialiased; }
+
+  /* ── Center-column container ── */
+  .sch-container { max-width: 1140px; margin: 0 auto; width: 100%; padding-left: 60px; padding-right: 60px; }
 
   /* ═══════════════════════ NAV ═══════════════════════ */
   .sch-nav {
@@ -125,8 +122,9 @@ const CSS = `
   /* ═══════════════════════ HERO ═══════════════════════ */
   .sch-hero {
     min-height: 100vh; display: flex; align-items: center;
-    padding: 100px 72px 80px; position: relative; overflow: hidden; gap: 40px;
+    padding: 100px 0 80px; position: relative; overflow: hidden;
   }
+  .sch-hero .sch-container { display: flex; align-items: center; gap: 48px; }
 
   /* Blobs */
   .sch-blob { position: absolute; border-radius: 50%; pointer-events: none; }
@@ -211,11 +209,24 @@ const CSS = `
   }
   .sch-btn-ghost:hover { border-color: rgb(93,50,239); color: rgb(93,50,239); background: rgba(93,50,239,.04); }
 
+  /* Pricing badges */
+  .sch-hero-perks {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
+    opacity: 0; transform: translateY(14px);
+    transition: all .72s cubic-bezier(.16,1,.3,1) .47s;
+  }
+  .sch-hero-perks.in { opacity: 1; transform: translateY(0); }
+  .sch-hero-perk {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500; color: #555;
+  }
+  .sch-hero-perk svg { color: #22c55e; flex-shrink: 0; }
+
   /* Hero Right */
   .sch-hero-right { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }
 
   .sch-mockup-wrap {
-    position: relative; width: 540px;
+    position: relative; width: 580px;
     opacity: 0; transform: translateY(30px);
     transition: opacity .9s cubic-bezier(.16,1,.3,1) .28s, transform .9s cubic-bezier(.16,1,.3,1) .28s;
   }
@@ -227,63 +238,114 @@ const CSS = `
     border-radius: 46px; filter: blur(30px); pointer-events: none;
   }
 
-  .sch-mockup {
-    background: #fff; border-radius: 18px;
-    box-shadow: 0 28px 60px rgba(0,0,0,.11), 0 6px 16px rgba(0,0,0,.05);
-    border: 1px solid rgba(0,0,0,.07);
-    display: flex; overflow: hidden; height: 384px;
-    animation: float 5.8s ease-in-out infinite;
-  }
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
 
-  /* Mock Sidebar */
-  .sch-mock-sidebar {
-    width: 52px; background: #f5f5f9; border-right: 1px solid #eee;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 20px 0; gap: 14px; flex-shrink: 0;
+  /* ── Laptop device frame ── */
+  .sch-laptop {
+    background: #1c1c1e; border-radius: 12px; padding: 8px 8px 0;
+    box-shadow: 0 28px 60px rgba(0,0,0,.18), 0 6px 16px rgba(0,0,0,.08);
+    animation: float 5.8s ease-in-out infinite;
   }
-  .sch-mock-icon { width: 28px; height: 28px; border-radius: 8px; background: #e1e1eb; transition: background .2s; }
-  .sch-mock-icon.active { background: rgb(93,50,239); box-shadow: 0 2px 8px rgba(93,50,239,.3); }
-  .sch-mock-icon.avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, rgb(93,50,239), rgb(150,110,255)); }
-
-  /* Mock Main */
-  .sch-mock-main { flex: 1; padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
-
-  .sch-mock-topbar { display: flex; justify-content: space-between; align-items: flex-start; }
-  .sch-mock-topbar-title { font-size: 15px; font-weight: 700; color: #1a1a2e; }
-  .sch-mock-topbar-sub { font-size: 11px; color: #999; margin-top: 2px; }
-  .sch-mock-chip { font-size: 11px; font-weight: 600; color: #fff; background: rgb(93,50,239); padding: 5px 12px; border-radius: 14px; }
-
-  .sch-mock-stats { display: flex; gap: 8px; }
-  .sch-mock-stat { flex: 1; background: #f7f7fb; border-radius: 10px; padding: 12px 14px; border: 1px solid #eff0f2; }
-  .sch-mock-stat-val { font-size: 19px; font-weight: 800; color: #1a1a2e; letter-spacing: -.5px; }
-  .sch-mock-stat-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-top: 3px; font-weight: 500; }
-
-  .sch-mock-bookings { flex: 1; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
-  .sch-mock-booking {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px; background: #fafafa;
-    border: 1px solid #f0f0f2; border-radius: 8px; transition: all .2s;
+  .sch-laptop-toolbar {
+    display: flex; align-items: center; gap: 5px; padding: 4px 8px 6px;
   }
-  .sch-mock-booking:hover { border-color: rgba(93,50,239,.2); background: rgba(93,50,239,.025); }
-  .sch-mock-booking-bar { width: 3px; height: 30px; border-radius: 2px; flex-shrink: 0; }
-  .sch-mock-booking-info { flex: 1; min-width: 0; }
-  .sch-mock-booking-name { font-size: 12px; font-weight: 600; color: #1a1a2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sch-mock-booking-loc { font-size: 10px; color: #999; margin-top: 2px; }
-  .sch-mock-booking-status { font-size: 10px; font-weight: 600; padding: 4px 9px; border-radius: 6px; white-space: nowrap; }
-  .confirmed { background: rgba(34,197,94,.1); color: #16a34a; }
-  .pending { background: rgba(245,158,11,.1); color: #d97706; }
-  .upcoming { background: rgba(93,50,239,.1); color: rgb(93,50,239); }
+  .sch-laptop-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .sch-laptop-screen {
+    background: #fff; border-radius: 4px 4px 0 0; overflow: hidden;
+    display: flex; height: 320px;
+  }
+  .sch-laptop-base {
+    height: 14px; background: linear-gradient(180deg, #2a2a2e, #1c1c1e);
+    border-radius: 0 0 12px 12px; margin: 0 -8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sch-laptop-notch {
+    width: 60px; height: 4px; background: #333; border-radius: 0 0 3px 3px; margin-top: -1px;
+  }
+
+  /* Screen sidebar */
+  .sch-lp-sidebar {
+    width: 130px; background: #f8f8fc; border-right: 1px solid #eee;
+    padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
+  }
+  .sch-lp-logo { font-size: 11px; font-weight: 800; color: rgb(93,50,239); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+  .sch-lp-logo::before { content:''; width:12px; height:12px; border-radius:3px; background: rgb(93,50,239); }
+  .sch-lp-nav-item {
+    font-size: 9px; font-weight: 500; color: #888; padding: 6px 8px;
+    border-radius: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .sch-lp-nav-item.active { background: rgba(93,50,239,.08); color: rgb(93,50,239); font-weight: 600; }
+  .sch-lp-nav-dot { width: 6px; height: 6px; border-radius: 2px; background: #ccc; flex-shrink: 0; }
+  .sch-lp-nav-item.active .sch-lp-nav-dot { background: rgb(93,50,239); }
+
+  /* Screen main content */
+  .sch-lp-main { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .sch-lp-header { display: flex; justify-content: space-between; align-items: center; }
+  .sch-lp-header-title { font-size: 12px; font-weight: 700; color: #1a1a2e; }
+  .sch-lp-tabs { display: flex; gap: 0; }
+  .sch-lp-tab { font-size: 8px; font-weight: 600; padding: 4px 10px; color: #999; border-bottom: 2px solid transparent; }
+  .sch-lp-tab.active { color: rgb(93,50,239); border-color: rgb(93,50,239); }
+
+  /* Board cards */
+  .sch-lp-board { display: flex; gap: 8px; flex: 1; overflow: hidden; }
+  .sch-lp-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .sch-lp-col-head { font-size: 8px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+  .sch-lp-card {
+    padding: 8px; border-radius: 7px; font-size: 8px; font-weight: 600;
+    color: #fff; line-height: 1.3;
+  }
+  .sch-lp-card-sub { font-size: 7px; font-weight: 400; opacity: .8; margin-top: 2px; }
+
+  /* Stats row */
+  .sch-lp-stats { display: flex; gap: 6px; }
+  .sch-lp-stat {
+    flex: 1; background: #f7f7fb; border-radius: 7px; padding: 8px 10px;
+    border: 1px solid #eff0f2;
+  }
+  .sch-lp-stat-val { font-size: 14px; font-weight: 800; color: #1a1a2e; letter-spacing: -.3px; }
+  .sch-lp-stat-label { font-size: 7px; color: #999; text-transform: uppercase; letter-spacing: .3px; margin-top: 1px; font-weight: 500; }
+
+  /* ── Phone device frame ── */
+  .sch-phone {
+    position: absolute; bottom: -20px; right: -30px;
+    width: 170px; background: #1c1c1e; border-radius: 18px; padding: 6px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.22);
+    animation: float 5.8s ease-in-out infinite;
+    animation-delay: -.6s;
+    z-index: 2;
+  }
+  .sch-phone-notch {
+    width: 44px; height: 12px; background: #1c1c1e; border-radius: 0 0 8px 8px;
+    margin: 0 auto; position: relative; top: -6px; z-index: 2;
+  }
+  .sch-phone-screen {
+    background: #fff; border-radius: 12px; overflow: hidden;
+    padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 5px;
+    min-height: 260px;
+  }
+  .sch-ph-logo { font-size: 9px; font-weight: 800; color: rgb(93,50,239); display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
+  .sch-ph-logo::before { content:''; width:8px; height:8px; border-radius:2px; background:rgb(93,50,239); }
+  .sch-ph-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 7px; background: #fafafa; border-radius: 7px;
+    border: 1px solid #f0f0f2;
+  }
+  .sch-ph-item-dot { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 700; }
+  .sch-ph-item-info { flex: 1; min-width: 0; }
+  .sch-ph-item-name { font-size: 8px; font-weight: 600; color: #1a1a2e; }
+  .sch-ph-item-sub { font-size: 7px; color: #999; margin-top: 1px; }
+  .sch-ph-item-bar { width: 36px; height: 4px; border-radius: 2px; background: #eee; overflow: hidden; }
+  .sch-ph-item-bar-fill { height: 100%; border-radius: 2px; }
 
   /* ═══════════════════════ TRUST BAR ═══════════════════════ */
-  .sch-trust { padding: 48px 60px; text-align: center; }
+  .sch-trust { padding: 48px 0; text-align: center; }
   .sch-trust p { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 24px; }
   .sch-trust-logos { display: flex; justify-content: center; align-items: center; gap: 52px; flex-wrap: wrap; }
   .sch-trust-logo { font-size: 17px; font-weight: 700; color: #c8c8d0; letter-spacing: -.3px; transition: color .3s; cursor: default; }
   .sch-trust-logo:hover { color: #aaa; }
 
   /* ═══════════════════════ SECTION BASE ═══════════════════════ */
-  .sch-section { padding: 104px 72px; position: relative; }
+  .sch-section { padding: 104px 0; position: relative; }
   .sch-section-head {
     display: flex; flex-direction: column; gap: 14px; max-width: 520px;
     opacity: 0; transform: translateY(22px);
@@ -311,7 +373,7 @@ const CSS = `
   .sch-showcase { display: flex; flex-direction: column; gap: 96px; margin-top: 64px; position: relative; z-index: 1; }
 
   .sch-showcase-row {
-    display: flex; align-items: center; gap: 56px;
+    display: flex; align-items: center; gap: 64px;
     opacity: 0; transform: translateY(30px);
     transition: all .72s cubic-bezier(.16,1,.3,1);
   }
@@ -342,7 +404,7 @@ const CSS = `
 
   /* Shared mockup card */
   .sch-showcase-card {
-    width: 100%; max-width: 480px;
+    width: 100%; max-width: 540px;
     background: #fff; border-radius: 18px;
     box-shadow: 0 24px 56px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.04);
     border: 1px solid rgba(0,0,0,.06); overflow: hidden;
@@ -398,93 +460,103 @@ const CSS = `
     font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
   }
 
-  /* ── Client Portal / Gallery Mockup ── */
-  .sch-gallery { animation: breathe 6s ease-in-out infinite; }
-  .sch-gallery-header {
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.012)} }
+
+  /* ── Team Collaboration Mockup ── */
+  .sch-team { animation: breathe 6s ease-in-out infinite; }
+  .sch-team-header {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 20px; border-bottom: 1px solid #f0f0f3;
   }
-  .sch-gallery-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
-  .sch-gallery-count { font-size: 11px; color: #999; margin-left: 8px; font-weight: 500; }
-  .sch-gallery-upload {
+  .sch-team-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-team-count { font-size: 11px; color: #999; margin-left: 8px; font-weight: 500; }
+  .sch-team-add {
     font-size: 11px; font-weight: 600; color: rgb(93,50,239); background: rgba(93,50,239,.08);
-    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    padding: 5px 12px; border-radius: 6px;
   }
-  .sch-gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px; }
-  .sch-gallery-thumb {
-    position: relative; border-radius: 10px; overflow: hidden;
-    aspect-ratio: 4/3; cursor: pointer; transition: all .25s;
+  .sch-team-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .sch-team-member {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; background: #fafafa; border-radius: 10px;
+    border: 1px solid #f0f0f3; transition: all .2s;
   }
-  .sch-gallery-thumb:hover { transform: scale(1.03); }
-  .sch-gallery-thumb.selected { outline: 2.5px solid rgb(93,50,239); outline-offset: -2.5px; }
-  .sch-gallery-img {
-    width: 100%; height: 100%; object-fit: cover;
+  .sch-team-member:hover { border-color: rgba(93,50,239,.2); background: rgba(93,50,239,.02); }
+  .sch-team-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
   }
-  .sch-gallery-badge {
-    position: absolute; bottom: 6px; left: 6px;
-    font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 4px;
-    text-transform: uppercase; letter-spacing: .3px;
+  .sch-team-info { flex: 1; min-width: 0; }
+  .sch-team-name { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .sch-team-role { font-size: 10px; color: #999; margin-top: 2px; }
+  .sch-team-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .sch-team-status {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
   }
-  .sch-gallery-badge.approved { background: rgba(34,197,94,.9); color: #fff; }
-  .sch-gallery-badge.review { background: rgba(245,158,11,.9); color: #fff; }
-  .sch-gallery-badge.new { background: rgba(93,50,239,.9); color: #fff; }
-
-  .sch-gallery-bar {
+  .sch-team-status.available { background: rgba(34,197,94,.1); color: #16a34a; }
+  .sch-team-status.busy { background: rgba(245,158,11,.1); color: #d97706; }
+  .sch-team-status.offline { background: #f0f0f2; color: #999; }
+  .sch-team-status-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .sch-team-status.available .sch-team-status-dot { background: #22c55e; }
+  .sch-team-status.busy .sch-team-status-dot { background: #f59e0b; }
+  .sch-team-status.offline .sch-team-status-dot { background: #ccc; }
+  .sch-team-jobs { font-size: 10px; color: #888; }
+  .sch-team-bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 20px; border-top: 1px solid #f0f0f3; background: #fafafa;
   }
-  .sch-gallery-bar-stat { font-size: 11px; color: #888; }
-  .sch-gallery-bar-stat strong { color: #1a1a2e; font-weight: 700; }
-  .sch-gallery-bar-btn {
+  .sch-team-bar-stat { font-size: 11px; color: #888; }
+  .sch-team-bar-stat strong { color: #1a1a2e; font-weight: 700; }
+  .sch-team-bar-btn {
     font-size: 11px; font-weight: 600; color: #fff; background: rgb(93,50,239);
     padding: 5px 14px; border-radius: 6px;
   }
 
-  /* ── Workflow / Pipeline Mockup ── */
-  .sch-pipe { padding: 28px 20px 24px; }
-  .sch-pipe-label { font-size: 12px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; text-align: center; }
-  .sch-pipe-sub { font-size: 10px; color: #999; margin-bottom: 24px; text-align: center; }
-
-  .sch-pipe-flow { display: flex; align-items: center; gap: 0; padding: 0 8px; }
-  .sch-pipe-step {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
-    position: relative; z-index: 1;
+  /* ── AI Business Growth Mockup ── */
+  .sch-ai { animation: breathe 6s ease-in-out infinite; animation-delay: -1s; position: relative; }
+  .sch-ai-overlay {
+    position: absolute; inset: 0; z-index: 3;
+    background: rgba(255,255,255,.55); backdrop-filter: blur(2px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 18px;
   }
-  .sch-pipe-node {
-    width: 46px; height: 46px; border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; font-size: 16px;
-    transition: all .3s;
+  .sch-ai-badge {
+    background: linear-gradient(135deg, rgb(93,50,239), rgb(138,92,255));
+    color: #fff; font-size: 13px; font-weight: 700;
+    padding: 10px 24px; border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(93,50,239,.35);
+    letter-spacing: .3px;
   }
-  .sch-pipe-node.done { background: rgba(34,197,94,.12); color: #16a34a; border: 2px solid rgba(34,197,94,.3); }
-  .sch-pipe-node.active { background: rgba(93,50,239,.12); color: rgb(93,50,239); border: 2px solid rgba(93,50,239,.3); animation: pulse 2.2s ease-in-out infinite; }
-  .sch-pipe-node.waiting { background: #f5f5f9; color: #ccc; border: 2px solid #eee; }
-  .sch-pipe-step-label { font-size: 10px; font-weight: 600; color: #555; text-align: center; line-height: 1.3; }
-
-  .sch-pipe-connector {
-    width: 100%; height: 3px; background: #eee; position: relative;
-    flex-shrink: 1; min-width: 20px; border-radius: 2px; overflow: hidden;
-    margin: 0 -4px; align-self: flex-start; margin-top: 22px;
+  .sch-ai-badge-sub { font-size: 11px; color: #6b6b7d; margin-top: 8px; font-weight: 500; }
+  .sch-ai-inner { padding: 20px; }
+  .sch-ai-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
   }
-  .sch-pipe-connector.active::after {
-    content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 40px;
-    background: linear-gradient(90deg, transparent, rgb(93,50,239), transparent);
-    border-radius: 2px;
-    animation: pipeline-flow 2s ease-in-out infinite;
+  .sch-ai-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-ai-chip {
+    font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 12px;
+    background: rgba(93,50,239,.1); color: rgb(93,50,239);
   }
-  .sch-pipe-connector.done { background: rgba(34,197,94,.3); }
-
-  .sch-pipe-events { margin-top: 24px; display: flex; flex-direction: column; gap: 6px; padding: 0 4px; }
-  .sch-pipe-event {
+  .sch-ai-metrics { display: flex; gap: 10px; margin-bottom: 16px; }
+  .sch-ai-metric {
+    flex: 1; background: #f7f7fb; border-radius: 10px; padding: 14px;
+    border: 1px solid #eff0f2; text-align: center;
+  }
+  .sch-ai-metric-val { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
+  .sch-ai-metric-label { font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: .4px; margin-top: 3px; font-weight: 500; }
+  .sch-ai-recs { display: flex; flex-direction: column; gap: 6px; }
+  .sch-ai-rec {
     display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; background: #f7f7fb; border-radius: 8px;
-    border: 1px solid #f0f0f3;
+    padding: 10px 12px; background: #fafafa; border-radius: 8px;
+    border: 1px solid #f0f0f3; font-size: 12px; color: #444;
   }
-  .sch-pipe-event-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .sch-pipe-event-text { font-size: 11px; color: #666; flex: 1; }
-  .sch-pipe-event-time { font-size: 10px; color: #bbb; font-weight: 500; white-space: nowrap; }
-
-  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.012)} }
-  @keyframes pipeline-flow { 0%{left:-40px} 100%{left:100%} }
+  .sch-ai-rec-icon {
+    width: 28px; height: 28px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+  }
+  .sch-ai-rec-text { flex: 1; font-weight: 500; }
 
   /* ── Territory / Map Mockup ── */
   .sch-map { overflow: hidden; }
@@ -578,7 +650,7 @@ const CSS = `
   .sch-step-desc { font-size: 13px; color: #6b6b7d; line-height: 1.6; }
 
   /* ═══════════════════════ STATS ═══════════════════════ */
-  .sch-stats { padding: 84px 60px; background: #fff; }
+  .sch-stats { padding: 84px 0; background: #fff; }
   .sch-stats-grid {
     display: flex; gap: 20px; max-width: 980px; margin: 0 auto;
     opacity: 0; transform: translateY(20px);
@@ -635,7 +707,7 @@ const CSS = `
 
   /* ═══════════════════════ CTA ═══════════════════════ */
   .sch-cta {
-    padding: 128px 60px; text-align: center; position: relative;
+    padding: 128px 0; text-align: center; position: relative;
     background: linear-gradient(140deg, rgb(72,34,226) 0%, rgb(93,50,239) 42%, rgb(118,72,250) 100%);
     overflow: hidden;
   }
@@ -666,7 +738,8 @@ const CSS = `
   .sch-btn-white:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,0,0,.24); }
 
   /* ═══════════════════════ FOOTER ═══════════════════════ */
-  .sch-footer { background: #0f0f1a; padding: 50px 60px; display: flex; justify-content: space-between; align-items: center; }
+  .sch-footer { background: #0f0f1a; padding: 50px 0; }
+  .sch-footer .sch-container { display: flex; justify-content: space-between; align-items: center; }
   .sch-footer-logo { font-size: 19px; font-weight: 800; color: #fff; }
   .sch-footer-links { display: flex; gap: 28px; }
   .sch-footer-links a { color: #5a5a6a; text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s; }
@@ -675,10 +748,13 @@ const CSS = `
 
   /* ═══════════════════════ RESPONSIVE ═══════════════════════ */
   @media (max-width: 960px) {
-    .sch-hero { flex-direction: column; padding: 130px 40px 64px; text-align: center; gap: 44px; }
+    .sch-container { padding-left: 32px; padding-right: 32px; }
+    .sch-hero { padding-top: 130px; padding-bottom: 64px; }
+    .sch-hero .sch-container { flex-direction: column; text-align: center; gap: 44px; }
     .sch-hero-left { flex: none; max-width: 100%; }
     .sch-hero-sub { max-width: 100%; }
     .sch-hero-btns { justify-content: center; }
+    .sch-hero-perks { justify-content: center; }
     .sch-hero-right { flex: none; width: 100%; justify-content: center; }
     .sch-mockup-wrap { width: 100%; max-width: 520px; }
     .sch-hero-h1 { font-size: 44px; }
@@ -688,20 +764,22 @@ const CSS = `
     .sch-showcase-text { text-align: center; }
     .sch-showcase-desc { max-width: 100%; }
     .sch-showcase-highlights { align-items: center; }
-    .sch-showcase-card { max-width: 420px; }
+    .sch-showcase-card { max-width: 480px; }
     .sch-showcase { gap: 72px; }
+    .sch-phone { width: 140px; right: -16px; bottom: -14px; }
   }
   @media (max-width: 720px) {
-    .sch-section { padding: 72px 32px; }
+    .sch-container { padding-left: 20px; padding-right: 20px; }
+    .sch-section { padding: 72px 0; }
     .sch-stats-grid { flex-wrap: wrap; gap: 14px; }
     .sch-stat-item { flex: 1 1 calc(50% - 7px); }
     .sch-steps { flex-direction: column; gap: 36px; align-items: center; }
     .sch-step-connector { display: none; }
     .sch-step { max-width: 280px; }
     .sch-section-title { font-size: 34px; }
-    .sch-cta { padding: 80px 32px; }
+    .sch-cta { padding: 80px 0; }
     .sch-cta-title { font-size: 34px; }
-    .sch-footer { flex-direction: column; gap: 20px; text-align: center; }
+    .sch-footer .sch-container { flex-direction: column; gap: 20px; text-align: center; }
     .sch-nav-links { display: none; }
     .sch-trust-logos { gap: 28px; }
     .sch-showcase-title { font-size: 26px; }
@@ -710,6 +788,8 @@ const CSS = `
     .sch-pipe-flow { gap: 0; }
     .sch-pipe-node { width: 38px; height: 38px; font-size: 14px; }
     .sch-pipe-connector { margin-top: 18px; }
+    .sch-phone { display: none; }
+    .sch-lp-sidebar { width: 100px; }
   }
 `;
 
@@ -775,9 +855,8 @@ export default function Scheddio() {
       <nav className={`sch-nav ${scrollY > 50 ? "scrolled" : ""}`}>
         <div className="sch-logo">Scheddio</div>
         <ul className="sch-nav-links">
-          <li><a href="#">Features</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">About</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About</a></li>
         </ul>
         <button className="sch-nav-cta">Get Started Free</button>
       </nav>
@@ -788,67 +867,127 @@ export default function Scheddio() {
         <div className="sch-blob sch-blob-2" />
         <div className="sch-blob sch-blob-3" />
 
-        <div className="sch-hero-left">
-          <div className={`sch-badge ${mounted ? "in" : ""}`}>
-            <span className="sch-badge-dot" /> New: smarter scheduling is here
+        <div className="sch-container">
+          <div className="sch-hero-left">
+            <div className={`sch-badge ${mounted ? "in" : ""}`}>
+              <span className="sch-badge-dot" /> 10 free projects to start
+            </div>
+            <h1 className={`sch-hero-h1 ${mounted ? "in" : ""}`}>
+              Real Estate Photography,<br /><span className="sch-gradient">Simplified. $3/project.</span>
+            </h1>
+            <p className={`sch-hero-sub ${mounted ? "in" : ""}`}>
+              Scheduling, delivery, and client management for real estate photographers — all in one platform. Start shooting, stop managing.
+            </p>
+            <div className={`sch-hero-btns ${mounted ? "in" : ""}`}>
+              <button className="sch-btn-primary">Start Free — 10 Projects on Us →</button>
+              <button className="sch-btn-ghost">See How It Works</button>
+            </div>
+            <div className={`sch-hero-perks ${mounted ? "in" : ""}`}>
+              <span className="sch-hero-perk">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                $3 per project
+              </span>
+              <span className="sch-hero-perk">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                No credit card required
+              </span>
+              <span className="sch-hero-perk">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Cancel anytime
+              </span>
+            </div>
           </div>
-          <h1 className={`sch-hero-h1 ${mounted ? "in" : ""}`}>
-            The CRM that keeps<br /><span className="sch-gradient">photographers booked.</span>
-          </h1>
-          <p className={`sch-hero-sub ${mounted ? "in" : ""}`}>
-            Manage your real estate shoots, clients, and workflows in one streamlined platform. Less admin headache, more time behind the lens.
-          </p>
-          <div className={`sch-hero-btns ${mounted ? "in" : ""}`}>
-            <button className="sch-btn-primary">Start for free →</button>
-            <button className="sch-btn-ghost">Watch demo</button>
-          </div>
-        </div>
 
-        <div className="sch-hero-right">
-          <div className={`sch-mockup-wrap ${mounted ? "in" : ""}`}>
-            <div className="sch-mockup-glow" />
-            <div className="sch-mockup">
-              {/* Sidebar */}
-              <div className="sch-mock-sidebar">
-                <div className="sch-mock-icon active" />
-                <div className="sch-mock-icon" />
-                <div className="sch-mock-icon" />
-                <div className="sch-mock-icon" />
-                <div style={{ flex: 1 }} />
-                <div className="sch-mock-icon avatar" />
-              </div>
-              {/* Main */}
-              <div className="sch-mock-main">
-                <div className="sch-mock-topbar">
-                  <div>
-                    <div className="sch-mock-topbar-title">Today's Schedule</div>
-                    <div className="sch-mock-topbar-sub">Tuesday, Jan 28</div>
-                  </div>
-                  <div className="sch-mock-chip">3 shoots</div>
+          <div className="sch-hero-right">
+            <div className={`sch-mockup-wrap ${mounted ? "in" : ""}`}>
+              <div className="sch-mockup-glow" />
+              {/* Laptop */}
+              <div className="sch-laptop">
+                <div className="sch-laptop-toolbar">
+                  <div className="sch-laptop-dot" style={{background:"#ff5f57"}} />
+                  <div className="sch-laptop-dot" style={{background:"#febc2e"}} />
+                  <div className="sch-laptop-dot" style={{background:"#28c840"}} />
                 </div>
-                <div className="sch-mock-stats">
-                  <div className="sch-mock-stat">
-                    <div className="sch-mock-stat-val" style={{ color: "#22c55e" }}>$4,280</div>
-                    <div className="sch-mock-stat-label">Revenue</div>
-                  </div>
-                  <div className="sch-mock-stat">
-                    <div className="sch-mock-stat-val" style={{ color: "rgb(93,50,239)" }}>7</div>
-                    <div className="sch-mock-stat-label">This Week</div>
-                  </div>
-                  <div className="sch-mock-stat">
-                    <div className="sch-mock-stat-val">2</div>
-                    <div className="sch-mock-stat-label">Pending</div>
-                  </div>
-                </div>
-                <div className="sch-mock-bookings">
-                  {bookings.map((b, i) => (
-                    <div key={i} className="sch-mock-booking">
-                      <div className="sch-mock-booking-bar" style={{ background: b.color }} />
-                      <div className="sch-mock-booking-info">
-                        <div className="sch-mock-booking-name">{b.name}</div>
-                        <div className="sch-mock-booking-loc">{b.loc}</div>
+                <div className="sch-laptop-screen">
+                  {/* Sidebar */}
+                  <div className="sch-lp-sidebar">
+                    <div className="sch-lp-logo">Scheddio</div>
+                    {["Scheduling","Suppliers","Services","Projects","Settings","Billing"].map((item, i) => (
+                      <div key={i} className={`sch-lp-nav-item ${i === 0 ? "active" : ""}`}>
+                        <div className="sch-lp-nav-dot" />
+                        {item}
                       </div>
-                      <div className={`sch-mock-booking-status ${b.sc}`}>{b.status}</div>
+                    ))}
+                  </div>
+                  {/* Main area */}
+                  <div className="sch-lp-main">
+                    <div className="sch-lp-header">
+                      <div className="sch-lp-header-title">Calendar — April 2026</div>
+                    </div>
+                    <div className="sch-lp-tabs">
+                      {["Today","Board","Table","All","Photos","Payments"].map((t, i) => (
+                        <span key={i} className={`sch-lp-tab ${i === 1 ? "active" : ""}`}>{t}</span>
+                      ))}
+                    </div>
+                    <div className="sch-lp-board">
+                      <div className="sch-lp-col">
+                        <div className="sch-lp-col-head">Booked</div>
+                        <div className="sch-lp-card" style={{background:"rgb(93,50,239)"}}>
+                          Inspections<div className="sch-lp-card-sub">3 projects</div>
+                        </div>
+                        <div className="sch-lp-card" style={{background:"#e74c8b"}}>
+                          Twilight<div className="sch-lp-card-sub">Photos</div>
+                        </div>
+                      </div>
+                      <div className="sch-lp-col">
+                        <div className="sch-lp-col-head">In Progress</div>
+                        <div className="sch-lp-card" style={{background:"#10b981"}}>
+                          Abandoned<div className="sch-lp-card-sub">2 properties</div>
+                        </div>
+                        <div className="sch-lp-card" style={{background:"#f59e0b"}}>
+                          Showcasing<div className="sch-lp-card-sub">Final edits</div>
+                        </div>
+                      </div>
+                      <div className="sch-lp-col">
+                        <div className="sch-lp-col-head">Delivered</div>
+                        <div className="sch-lp-card" style={{background:"#6366f1"}}>
+                          Videography<div className="sch-lp-card-sub">Drone shots</div>
+                        </div>
+                        <div className="sch-lp-card" style={{background:"#8b5cf6"}}>
+                          Any Outdoor<div className="sch-lp-card-sub">Sent to client</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="sch-lp-stats">
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">3.4</div><div className="sch-lp-stat-label">Rating</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">$0</div><div className="sch-lp-stat-label">Owed</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">18</div><div className="sch-lp-stat-label">Projects</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">55,740</div><div className="sch-lp-stat-label">Revenue</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
+              </div>
+              {/* Phone */}
+              <div className="sch-phone">
+                <div className="sch-phone-notch" />
+                <div className="sch-phone-screen">
+                  <div className="sch-ph-logo">Scheddio</div>
+                  {[
+                    { initials: "MR", name: "Residences", sub: "Miami Gardens", color: "rgb(93,50,239)", pct: 80 },
+                    { initials: "RS", name: "Resellers", sub: "Renegotiating rates", color: "#e74c8b", pct: 45 },
+                    { initials: "RC", name: "Receivables", sub: "Reconciliation pending", color: "#10b981", pct: 100 },
+                    { initials: "TR", name: "Transactions", sub: "Current businesses", color: "#f59e0b", pct: 60 },
+                  ].map((item, i) => (
+                    <div key={i} className="sch-ph-item">
+                      <div className="sch-ph-item-dot" style={{background: item.color}}>{item.initials}</div>
+                      <div className="sch-ph-item-info">
+                        <div className="sch-ph-item-name">{item.name}</div>
+                        <div className="sch-ph-item-sub">{item.sub}</div>
+                      </div>
+                      <div className="sch-ph-item-bar">
+                        <div className="sch-ph-item-bar-fill" style={{width:`${item.pct}%`, background: item.color}} />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -860,196 +999,151 @@ export default function Scheddio() {
 
       {/* ── Trust Bar ── */}
       <div className="sch-trust">
-        <p>Trusted by photographers working with</p>
-        <div className="sch-trust-logos">
-          {["Zillow", "Realogy", "eXp World", "Century 21", "Compass"].map(l => (
-            <span key={l} className="sch-trust-logo">{l}</span>
-          ))}
+        <div className="sch-container">
+          <p>Trusted by photographers working with</p>
+          <div className="sch-trust-logos">
+            {["Zillow", "Realogy", "eXp World", "Century 21", "Compass"].map(l => (
+              <span key={l} className="sch-trust-logo">{l}</span>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ── Features / Showcase ── */}
-      <section className="sch-section sch-features" ref={featRef}>
-        <div className={`sch-section-head ${featVis ? "in" : ""}`}>
-          <div className="sch-section-tag">Features</div>
-          <h2 className="sch-section-title">Everything you need<br />to grow your business.</h2>
-          <p className="sch-section-sub">Built specifically for real estate photographers who want to spend less time managing and more time creating.</p>
-        </div>
-
-        <div className="sch-showcase">
-          {/* ── Row 1: Smart Scheduling ── */}
-          <div ref={feat1Ref} className={`sch-showcase-row ${feat1Vis ? "in" : ""}`}>
-            <div className="sch-showcase-text">
-              <div className="sch-showcase-tag">Scheduling</div>
-              <h3 className="sch-showcase-title">{features[0].title}</h3>
-              <p className="sch-showcase-desc">{features[0].desc}</p>
-              <ul className="sch-showcase-highlights">
-                {features[0].highlights.map((h, i) => <li key={i}>{h}</li>)}
-              </ul>
-            </div>
-            <div className="sch-showcase-mockup">
-              <div className="sch-showcase-card sch-sched">
-                <div className="sch-showcase-card-glow" />
-                <div className="sch-sched-header">
-                  <span className="sch-sched-month">January 2026</span>
-                  <div className="sch-sched-toggle">
-                    <span>Day</span>
-                    <span className="active">Week</span>
-                    <span>Month</span>
-                  </div>
-                </div>
-                <div className="sch-sched-days">
-                  {["Mon","Tue","Wed","Thu","Fri"].map(d => (
-                    <span key={d} className={`sch-sched-day ${d === "Tue" ? "today" : ""}`}>{d}</span>
-                  ))}
-                </div>
-                <div className="sch-sched-nums">
-                  {[26,27,28,29,30].map(n => (
-                    <span key={n} className={`sch-sched-num ${n === 27 ? "today" : ""}`}>{n}</span>
-                  ))}
-                </div>
-                <div className="sch-sched-slots">
-                  <div className="sch-sched-slot">
-                    <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
-                    <div className="sch-sched-slot-time">9:00 AM</div>
-                    <div className="sch-sched-slot-name">Martinez Residence</div>
-                    <span className="sch-sched-slot-pill confirmed">Confirmed</span>
-                  </div>
-                  <div className="sch-sched-slot">
-                    <div className="sch-sched-slot-bar" style={{background:"#f59e0b"}} />
-                    <div className="sch-sched-slot-time">1:30 PM</div>
-                    <div className="sch-sched-slot-name">Luxury Condo 4B</div>
-                    <span className="sch-sched-slot-pill pending">Pending</span>
-                  </div>
-                  <div className="sch-sched-slot">
-                    <div className="sch-sched-slot-bar" style={{background:"#22c55e"}} />
-                    <div className="sch-sched-slot-time">4:00 PM</div>
-                    <div className="sch-sched-slot-name">Downtown Loft</div>
-                    <span className="sch-sched-slot-pill upcoming">Upcoming</span>
-                  </div>
-                  <div className="sch-sched-slot">
-                    <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
-                    <div className="sch-sched-slot-time">6:00 PM</div>
-                    <div className="sch-sched-slot-name">Sunset Villa Shoot</div>
-                    <span className="sch-sched-slot-pill confirmed">Confirmed</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <section id="features" className="sch-section sch-features" ref={featRef}>
+        <div className="sch-container">
+          <div className={`sch-section-head ${featVis ? "in" : ""}`}>
+            <div className="sch-section-tag">Features</div>
+            <h2 className="sch-section-title">Everything you need<br />to grow your business.</h2>
+            <p className="sch-section-sub">Built specifically for real estate photographers who want to spend less time managing and more time creating.</p>
           </div>
 
-          {/* ── Row 2: Client Portal (reversed) ── */}
-          <div ref={feat2Ref} className={`sch-showcase-row reverse ${feat2Vis ? "in" : ""}`}>
-            <div className="sch-showcase-text">
-              <div className="sch-showcase-tag">Portal</div>
-              <h3 className="sch-showcase-title">{features[1].title}</h3>
-              <p className="sch-showcase-desc">{features[1].desc}</p>
-              <ul className="sch-showcase-highlights">
-                {features[1].highlights.map((h, i) => <li key={i}>{h}</li>)}
-              </ul>
-            </div>
-            <div className="sch-showcase-mockup">
-              <div className="sch-showcase-card sch-gallery">
-                <div className="sch-showcase-card-glow" />
-                <div className="sch-gallery-header">
-                  <div style={{display:"flex",alignItems:"baseline"}}>
-                    <span className="sch-gallery-title">Property Gallery</span>
-                    <span className="sch-gallery-count">24 photos</span>
-                  </div>
-                  <span className="sch-gallery-upload">+ Upload</span>
-                </div>
-                <div className="sch-gallery-grid">
-                  <div className="sch-gallery-thumb selected">
-                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #e8dff5 0%, #c4b5e0 100%)"}} />
-                    <span className="sch-gallery-badge approved">Approved</span>
-                  </div>
-                  <div className="sch-gallery-thumb">
-                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #d4e7fe 0%, #a8c8f0 100%)"}} />
-                    <span className="sch-gallery-badge approved">Approved</span>
-                  </div>
-                  <div className="sch-gallery-thumb">
-                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #fde8d0 0%, #f0c89a 100%)"}} />
-                    <span className="sch-gallery-badge review">In Review</span>
-                  </div>
-                  <div className="sch-gallery-thumb">
-                    <div className="sch-gallery-img" style={{background:"linear-gradient(135deg, #d5f5e3 0%, #a3e4bc 100%)"}} />
-                    <span className="sch-gallery-badge new">New</span>
-                  </div>
-                </div>
-                <div className="sch-gallery-bar">
-                  <span className="sch-gallery-bar-stat"><strong>18</strong> approved · <strong>4</strong> in review · <strong>2</strong> new</span>
-                  <span className="sch-gallery-bar-btn">Send to Client</span>
-                </div>
+          <div className="sch-showcase">
+            {/* ── Row 1: Smart Scheduling ── */}
+            <div ref={feat1Ref} className={`sch-showcase-row ${feat1Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Scheduling</div>
+                <h3 className="sch-showcase-title">{features[0].title}</h3>
+                <p className="sch-showcase-desc">{features[0].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[0].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
               </div>
-            </div>
-          </div>
-
-          {/* ── Row 3: Workflow Automation ── */}
-          <div ref={feat3Ref} className={`sch-showcase-row ${feat3Vis ? "in" : ""}`}>
-            <div className="sch-showcase-text">
-              <div className="sch-showcase-tag">Automation</div>
-              <h3 className="sch-showcase-title">{features[2].title}</h3>
-              <p className="sch-showcase-desc">{features[2].desc}</p>
-              <ul className="sch-showcase-highlights">
-                {features[2].highlights.map((h, i) => <li key={i}>{h}</li>)}
-              </ul>
-            </div>
-            <div className="sch-showcase-mockup">
-              <div className="sch-showcase-card">
-                <div className="sch-showcase-card-glow" />
-                <div className="sch-pipe">
-                  <div className="sch-pipe-label">Workflow: Post-Shoot Delivery</div>
-                  <div className="sch-pipe-sub">Automatically triggered after shoot completion</div>
-                  <div className="sch-pipe-flow">
-                    <div className="sch-pipe-step">
-                      <div className="sch-pipe-node done">✓</div>
-                      <div className="sch-pipe-step-label">Shoot<br/>Complete</div>
-                    </div>
-                    <div className="sch-pipe-connector done" />
-                    <div className="sch-pipe-step">
-                      <div className="sch-pipe-node done">✓</div>
-                      <div className="sch-pipe-step-label">Auto<br/>Edit</div>
-                    </div>
-                    <div className="sch-pipe-connector active" />
-                    <div className="sch-pipe-step">
-                      <div className="sch-pipe-node active">→</div>
-                      <div className="sch-pipe-step-label">Deliver &<br/>Invoice</div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-sched">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-sched-header">
+                    <span className="sch-sched-month">March 2026</span>
+                    <div className="sch-sched-toggle">
+                      <span>Day</span>
+                      <span className="active">Week</span>
+                      <span>Month</span>
                     </div>
                   </div>
-                  <div className="sch-pipe-events">
-                    <div className="sch-pipe-event">
-                      <div className="sch-pipe-event-dot" style={{background:"#22c55e"}} />
-                      <span className="sch-pipe-event-text">Photos edited and watermarked</span>
-                      <span className="sch-pipe-event-time">2 min ago</span>
+                  <div className="sch-sched-days">
+                    {["Mon","Tue","Wed","Thu","Fri"].map(d => (
+                      <span key={d} className={`sch-sched-day ${d === "Tue" ? "today" : ""}`}>{d}</span>
+                    ))}
+                  </div>
+                  <div className="sch-sched-nums">
+                    {[2,3,4,5,6].map(n => (
+                      <span key={n} className={`sch-sched-num ${n === 3 ? "today" : ""}`}>{n}</span>
+                    ))}
+                  </div>
+                  <div className="sch-sched-slots">
+                    <div className="sch-sched-slot">
+                      <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
+                      <div className="sch-sched-slot-time">9:00 AM</div>
+                      <div className="sch-sched-slot-name">Martinez Residence</div>
+                      <span className="sch-sched-slot-pill confirmed">Confirmed</span>
                     </div>
-                    <div className="sch-pipe-event">
-                      <div className="sch-pipe-event-dot" style={{background:"rgb(93,50,239)"}} />
-                      <span className="sch-pipe-event-text">Gallery link sent to client</span>
-                      <span className="sch-pipe-event-time">Just now</span>
+                    <div className="sch-sched-slot">
+                      <div className="sch-sched-slot-bar" style={{background:"#f59e0b"}} />
+                      <div className="sch-sched-slot-time">1:30 PM</div>
+                      <div className="sch-sched-slot-name">Luxury Condo 4B</div>
+                      <span className="sch-sched-slot-pill pending">Pending</span>
                     </div>
-                    <div className="sch-pipe-event">
-                      <div className="sch-pipe-event-dot" style={{background:"#f59e0b"}} />
-                      <span className="sch-pipe-event-text">Invoice #1042 queued for delivery</span>
-                      <span className="sch-pipe-event-time">Pending</span>
+                    <div className="sch-sched-slot">
+                      <div className="sch-sched-slot-bar" style={{background:"#22c55e"}} />
+                      <div className="sch-sched-slot-time">4:00 PM</div>
+                      <div className="sch-sched-slot-name">Downtown Loft</div>
+                      <span className="sch-sched-slot-pill upcoming">Upcoming</span>
+                    </div>
+                    <div className="sch-sched-slot">
+                      <div className="sch-sched-slot-bar" style={{background:"rgb(93,50,239)"}} />
+                      <div className="sch-sched-slot-time">6:00 PM</div>
+                      <div className="sch-sched-slot-name">Sunset Villa Shoot</div>
+                      <span className="sch-sched-slot-pill confirmed">Confirmed</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          {/* ── Row 4: Territory Configuration (reversed) ── */}
-          <div ref={feat4Ref} className={`sch-showcase-row reverse ${feat4Vis ? "in" : ""}`}>
-            <div className="sch-showcase-text">
-              <div className="sch-showcase-tag">Territory</div>
-              <h3 className="sch-showcase-title">{features[3].title}</h3>
-              <p className="sch-showcase-desc">{features[3].desc}</p>
-              <ul className="sch-showcase-highlights">
-                {features[3].highlights.map((h, i) => <li key={i}>{h}</li>)}
-              </ul>
+
+            {/* ── Row 2: Team Collaboration (reversed) ── */}
+            <div ref={feat2Ref} className={`sch-showcase-row reverse ${feat2Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Collaboration</div>
+                <h3 className="sch-showcase-title">{features[1].title}</h3>
+                <p className="sch-showcase-desc">{features[1].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[1].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-team">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-team-header">
+                    <div style={{display:"flex",alignItems:"baseline"}}>
+                      <span className="sch-team-title">Team Members</span>
+                      <span className="sch-team-count">5 active</span>
+                    </div>
+                    <span className="sch-team-add">+ Invite</span>
+                  </div>
+                  <div className="sch-team-list">
+                    {[
+                      { initials: "JR", name: "James Rivera", role: "Lead Photographer", bg: "linear-gradient(135deg, rgb(93,50,239), rgb(138,92,255))", status: "available", statusLabel: "Available", jobs: "4 shoots this week" },
+                      { initials: "SC", name: "Sarah Chen", role: "Drone Operator", bg: "linear-gradient(135deg, #10b981, #34d399)", status: "busy", statusLabel: "On Shoot", jobs: "2 shoots today" },
+                      { initials: "MK", name: "Marcus King", role: "Video Specialist", bg: "linear-gradient(135deg, #f59e0b, #fbbf24)", status: "available", statusLabel: "Available", jobs: "3 shoots this week" },
+                      { initials: "AP", name: "Ana Perez", role: "Photo Editor", bg: "linear-gradient(135deg, #e74c8b, #f472b6)", status: "offline", statusLabel: "Offline", jobs: "12 edits pending" },
+                    ].map((m, i) => (
+                      <div key={i} className="sch-team-member">
+                        <div className="sch-team-avatar" style={{background: m.bg}}>{m.initials}</div>
+                        <div className="sch-team-info">
+                          <div className="sch-team-name">{m.name}</div>
+                          <div className="sch-team-role">{m.role}</div>
+                        </div>
+                        <div className="sch-team-meta">
+                          <div className={`sch-team-status ${m.status}`}>
+                            <div className="sch-team-status-dot" />
+                            {m.statusLabel}
+                          </div>
+                          <div className="sch-team-jobs">{m.jobs}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="sch-team-bar">
+                    <span className="sch-team-bar-stat"><strong>3</strong> available · <strong>1</strong> on shoot · <strong>1</strong> offline</span>
+                    <span className="sch-team-bar-btn">Assign Shoot</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="sch-showcase-mockup">
-              <div className="sch-showcase-card sch-map">
-                <div className="sch-showcase-card-glow" />
+
+            {/* ── Row 3: Customizable Map Regions ── */}
+            <div ref={feat3Ref} className={`sch-showcase-row ${feat3Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Map Regions</div>
+                <h3 className="sch-showcase-title">{features[2].title}</h3>
+                <p className="sch-showcase-desc">{features[2].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[2].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-map">
+                  <div className="sch-showcase-card-glow" />
                 <div className="sch-map-header">
                   <span className="sch-map-title">Service Territory</span>
                   <div className="sch-map-tools">
@@ -1171,43 +1265,104 @@ export default function Scheddio() {
               </div>
             </div>
           </div>
+
+            {/* ── Row 4: AI Business Growth (reversed) ── */}
+            <div ref={feat4Ref} className={`sch-showcase-row reverse ${feat4Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">AI Powered</div>
+                <h3 className="sch-showcase-title">{features[3].title}</h3>
+                <p className="sch-showcase-desc">{features[3].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[3].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-ai">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-ai-overlay">
+                    <div className="sch-ai-badge">Coming Soon</div>
+                    <div className="sch-ai-badge-sub">Currently in development</div>
+                  </div>
+                  <div className="sch-ai-inner">
+                    <div className="sch-ai-header">
+                      <span className="sch-ai-title">AI Growth Insights</span>
+                      <span className="sch-ai-chip">Beta</span>
+                    </div>
+                    <div className="sch-ai-metrics">
+                      <div className="sch-ai-metric">
+                        <div className="sch-ai-metric-val" style={{color:"#22c55e"}}>+34%</div>
+                        <div className="sch-ai-metric-label">Revenue Growth</div>
+                      </div>
+                      <div className="sch-ai-metric">
+                        <div className="sch-ai-metric-val" style={{color:"rgb(93,50,239)"}}>12</div>
+                        <div className="sch-ai-metric-label">New Leads</div>
+                      </div>
+                      <div className="sch-ai-metric">
+                        <div className="sch-ai-metric-val" style={{color:"#f59e0b"}}>$85</div>
+                        <div className="sch-ai-metric-label">Avg Project</div>
+                      </div>
+                    </div>
+                    <div className="sch-ai-recs">
+                      <div className="sch-ai-rec">
+                        <div className="sch-ai-rec-icon" style={{background:"rgba(34,197,94,.1)", color:"#16a34a"}}>$</div>
+                        <span className="sch-ai-rec-text">Raise twilight pricing by 15% — demand is up</span>
+                      </div>
+                      <div className="sch-ai-rec">
+                        <div className="sch-ai-rec-icon" style={{background:"rgba(93,50,239,.1)", color:"rgb(93,50,239)"}}>+</div>
+                        <span className="sch-ai-rec-text">Expand to Fort Lauderdale — 8 agents searching</span>
+                      </div>
+                      <div className="sch-ai-rec">
+                        <div className="sch-ai-rec-icon" style={{background:"rgba(245,158,11,.1)", color:"#d97706"}}>!</div>
+                        <span className="sch-ai-rec-text">Follow up with 3 inactive clients this week</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ── How It Works ── */}
-      <section className="sch-section sch-how" ref={howRef}>
-        <div className={`sch-section-head ${howVis ? "in" : ""}`}>
-          <div className="sch-section-tag">How It Works</div>
-          <h2 className="sch-section-title">Up and running<br />in minutes.</h2>
-        </div>
-        <div className="sch-steps">
-          {steps.map((s, i) => (
-            <div key={i} className={`sch-step ${howVis ? "in" : ""}`}>
-              {i < 2 && <div className="sch-step-connector" />}
-              <div className="sch-step-num">{i + 1}</div>
-              <h3 className="sch-step-title">{s.title}</h3>
-              <p className="sch-step-desc">{s.desc}</p>
-            </div>
-          ))}
+      <section id="about" className="sch-section sch-how" ref={howRef}>
+        <div className="sch-container">
+          <div className={`sch-section-head ${howVis ? "in" : ""}`}>
+            <div className="sch-section-tag">How It Works</div>
+            <h2 className="sch-section-title">Up and running<br />in minutes.</h2>
+          </div>
+          <div className="sch-steps">
+            {steps.map((s, i) => (
+              <div key={i} className={`sch-step ${howVis ? "in" : ""}`}>
+                {i < 2 && <div className="sch-step-connector" />}
+                <div className="sch-step-num">{i + 1}</div>
+                <h3 className="sch-step-title">{s.title}</h3>
+                <p className="sch-step-desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── Stats ── */}
       <section className="sch-stats" ref={statsRef}>
-        <div className={`sch-stats-grid ${statsVis ? "in" : ""}`}>
-          {stats.map((s, i) => (
-            <div key={i} className={`sch-stat-item ${statsVis ? "in" : ""}`}>
-              <div className="sch-stat-number">
-                <Counter to={s.to} prefix={s.prefix} suffix={s.suffix} animate={statsVis} />
+        <div className="sch-container">
+          <div className={`sch-stats-grid ${statsVis ? "in" : ""}`}>
+            {stats.map((s, i) => (
+              <div key={i} className={`sch-stat-item ${statsVis ? "in" : ""}`}>
+                <div className="sch-stat-number">
+                  <Counter to={s.to} prefix={s.prefix} suffix={s.suffix} animate={statsVis} />
+                </div>
+                <div className="sch-stat-label">{s.label}</div>
               </div>
-              <div className="sch-stat-label">{s.label}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── Testimonial ── */}
       <section className="sch-section sch-testimonial" ref={testRef}>
+        <div className="sch-container">
         <div className={`sch-test-card ${testVis ? "in" : ""}`}>
           <div className="sch-test-quote">"</div>
           <div className="sch-test-stars">★★★★★</div>
@@ -1222,30 +1377,34 @@ export default function Scheddio() {
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       {/* ── CTA ── */}
       <section className="sch-cta" ref={ctaRef}>
         <div className="sch-cta-blob-1" />
         <div className="sch-cta-blob-2" />
-        <div className={`sch-cta-content ${ctaVis ? "in" : ""}`}>
-          <h2 className="sch-cta-title">Ready to transform<br />your photography business?</h2>
-          <p className="sch-cta-sub">Join thousands of photographers who've already made the switch. Start free, no credit card required.</p>
-          <button className="sch-btn-white">Get started for free →</button>
+        <div className="sch-container">
+          <div className={`sch-cta-content ${ctaVis ? "in" : ""}`}>
+            <h2 className="sch-cta-title">Ready to transform<br />your photography business?</h2>
+            <p className="sch-cta-sub">Join thousands of photographers who've already made the switch. Start free, no credit card required.</p>
+            <button className="sch-btn-white">Start Free — 10 Projects on Us →</button>
+          </div>
         </div>
       </section>
 
       {/* ── Footer ── */}
       <footer className="sch-footer">
-        <div className="sch-footer-logo">Scheddio</div>
-        <div className="sch-footer-links">
-          <a href="#">Features</a>
-          <a href="#">Pricing</a>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Contact</a>
+        <div className="sch-container">
+          <div className="sch-footer-logo">Scheddio</div>
+          <div className="sch-footer-links">
+            <a href="#features">Features</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+          </div>
+          <div className="sch-footer-copy">© 2026 Scheddio. All rights reserved.</div>
         </div>
-        <div className="sch-footer-copy">© 2026 Scheddio. All rights reserved.</div>
       </footer>
     </div>
   );

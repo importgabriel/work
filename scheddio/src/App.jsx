@@ -227,6 +227,7 @@ const CSS = `
 
   .sch-mockup-wrap {
     position: relative; width: 580px;
+    perspective: 1800px;
     opacity: 0; transform: translateY(30px);
     transition: opacity .9s cubic-bezier(.16,1,.3,1) .28s, transform .9s cubic-bezier(.16,1,.3,1) .28s;
   }
@@ -238,13 +239,21 @@ const CSS = `
     border-radius: 46px; filter: blur(30px); pointer-events: none;
   }
 
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+  @keyframes float3d {
+    0%,100%{ transform: rotateX(8deg) rotateY(-6deg) translateY(0); }
+    50%{ transform: rotateX(8deg) rotateY(-6deg) translateY(-9px); }
+  }
 
   /* ── Laptop device frame ── */
   .sch-laptop {
     background: #1c1c1e; border-radius: 12px; padding: 8px 8px 0;
-    box-shadow: 0 28px 60px rgba(0,0,0,.18), 0 6px 16px rgba(0,0,0,.08);
-    animation: float 5.8s ease-in-out infinite;
+    box-shadow:
+      0 40px 80px rgba(0,0,0,.22),
+      0 8px 20px rgba(0,0,0,.10),
+      -6px 12px 30px rgba(93,50,239,.06);
+    transform-style: preserve-3d;
+    transform: rotateX(8deg) rotateY(-6deg);
+    animation: float3d 5.8s ease-in-out infinite;
   }
   .sch-laptop-toolbar {
     display: flex; align-items: center; gap: 5px; padding: 4px 8px 6px;
@@ -275,14 +284,18 @@ const CSS = `
   }
   .sch-lp-key {
     height: 10px; border-radius: 2px;
-    background: #3a3a3d; flex: 1; max-width: 22px;
+    background: linear-gradient(180deg, #444447, #3a3a3d);
+    box-shadow: 0 1px 0 #2a2a2d;
+    flex: 1; max-width: 22px;
   }
   .sch-lp-key.wide { max-width: 34px; }
   .sch-lp-key.space { max-width: 90px; flex: 3; }
   .sch-lp-trackpad {
     width: 70px; height: 38px; border-radius: 4px;
-    background: #333336; margin: 6px auto 2px;
+    background: linear-gradient(180deg, #3a3a3d, #333336);
+    margin: 6px auto 2px;
     border: 1px solid #3e3e42;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
   }
 
   /* Screen sidebar */
@@ -374,11 +387,19 @@ const CSS = `
   .sch-ph-sched-block-sub { font-size: 7px; font-weight: 400; opacity: .85; margin-top: 1px; }
 
   /* ── Phone device frame ── */
+  @keyframes float-phone {
+    0%,100%{ transform: rotateY(6deg) rotateX(-2deg) translateY(0); }
+    50%{ transform: rotateY(6deg) rotateX(-2deg) translateY(-8px); }
+  }
   .sch-phone {
-    position: absolute; bottom: -20px; right: -30px;
+    position: absolute; bottom: -10px; right: -30px;
     width: 170px; background: #1c1c1e; border-radius: 18px; padding: 6px;
-    box-shadow: 0 16px 40px rgba(0,0,0,.22);
-    animation: float 5.8s ease-in-out infinite;
+    box-shadow:
+      0 24px 50px rgba(0,0,0,.25),
+      -4px 8px 20px rgba(0,0,0,.10);
+    transform-style: preserve-3d;
+    transform: rotateY(6deg) rotateX(-2deg);
+    animation: float-phone 5.8s ease-in-out infinite;
     animation-delay: -.6s;
     z-index: 2;
   }

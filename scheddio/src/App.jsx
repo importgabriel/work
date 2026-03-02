@@ -240,21 +240,52 @@ const CSS = `
   }
 
   @keyframes float3d {
-    0%,100%{ transform: rotateX(8deg) rotateY(-6deg) translateY(0); }
-    50%{ transform: rotateX(8deg) rotateY(-6deg) translateY(-9px); }
+    0%,100%{ transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg) translateY(0); }
+    50%{ transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg) translateY(-9px); }
   }
 
-  /* ── Laptop device frame ── */
+  /* ── Laptop device frame (3D open laptop) ── */
   .sch-laptop {
-    background: #1c1c1e; border-radius: 12px; padding: 8px 8px 0;
-    box-shadow:
-      0 40px 80px rgba(0,0,0,.22),
-      0 8px 20px rgba(0,0,0,.10),
-      -6px 12px 30px rgba(93,50,239,.06);
     transform-style: preserve-3d;
-    transform: rotateX(8deg) rotateY(-6deg);
+    transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg);
     animation: float3d 5.8s ease-in-out infinite;
+    position: relative;
   }
+
+  /* ── Lid (screen half) ── */
+  .sch-laptop-lid {
+    background: #1c1c1e; border-radius: 12px 12px 0 0; padding: 8px 8px 0;
+    transform-style: preserve-3d;
+    transform-origin: bottom center;
+    transform: rotateX(-68deg);
+    position: relative;
+    box-shadow:
+      0 -30px 60px rgba(0,0,0,.18),
+      0 -4px 16px rgba(0,0,0,.10);
+  }
+  /* Lid thickness — visible bottom edge at hinge */
+  .sch-laptop-lid::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 6px;
+    background: linear-gradient(180deg, #2a2a2e, #1a1a1c);
+    transform-origin: top center;
+    transform: rotateX(90deg);
+    border-radius: 0 0 2px 2px;
+  }
+  /* Lid left side edge */
+  .sch-laptop-lid::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 6px;
+    background: linear-gradient(90deg, #151517, #1c1c1e);
+    transform-origin: right center;
+    transform: rotateY(-90deg);
+    border-radius: 2px 0 0 2px;
+  }
+
   .sch-laptop-toolbar {
     display: flex; align-items: center; gap: 5px; padding: 4px 8px 6px;
   }
@@ -263,9 +294,43 @@ const CSS = `
     background: #fff; border-radius: 4px 4px 0 0; overflow: hidden;
     display: flex; height: 320px;
   }
+
+  /* ── Body (keyboard half) ── */
+  .sch-laptop-body {
+    background: #1c1c1e;
+    border-radius: 0 0 12px 12px;
+    transform-style: preserve-3d;
+    position: relative;
+    box-shadow:
+      0 40px 80px rgba(0,0,0,.25),
+      0 8px 20px rgba(0,0,0,.12),
+      -6px 12px 30px rgba(93,50,239,.06);
+  }
+  /* Body front edge — visible thickness */
+  .sch-laptop-body::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 6px;
+    background: linear-gradient(180deg, #232326, #18181a);
+    transform-origin: top center;
+    transform: rotateX(90deg);
+    border-radius: 0 0 4px 4px;
+  }
+  /* Body left side edge */
+  .sch-laptop-body::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 6px;
+    background: linear-gradient(90deg, #151517, #1c1c1e);
+    transform-origin: right center;
+    transform: rotateY(-90deg);
+    border-radius: 0 0 0 4px;
+  }
+
   .sch-laptop-base {
     height: 10px; background: linear-gradient(180deg, #2a2a2e, #232326);
-    margin: 0 -8px;
     display: flex; align-items: center; justify-content: center;
   }
   .sch-laptop-notch {
@@ -275,7 +340,7 @@ const CSS = `
   /* Keyboard deck — recessed well */
   .sch-laptop-keyboard {
     background: linear-gradient(180deg, #232326 0%, #1e1e20 100%);
-    border-radius: 0 0 12px 12px; margin: 0 -8px;
+    border-radius: 0 0 12px 12px;
     padding: 8px 10px 6px;
     display: flex; flex-direction: column; gap: 4px;
   }
@@ -997,12 +1062,14 @@ export default function Scheddio() {
               <div className="sch-mockup-glow" />
               {/* Laptop */}
               <div className="sch-laptop">
-                <div className="sch-laptop-toolbar">
-                  <div className="sch-laptop-dot" style={{background:"#ff5f57"}} />
-                  <div className="sch-laptop-dot" style={{background:"#febc2e"}} />
-                  <div className="sch-laptop-dot" style={{background:"#28c840"}} />
-                </div>
-                <div className="sch-laptop-screen">
+                {/* Lid — screen half, hinged open */}
+                <div className="sch-laptop-lid">
+                  <div className="sch-laptop-toolbar">
+                    <div className="sch-laptop-dot" style={{background:"#ff5f57"}} />
+                    <div className="sch-laptop-dot" style={{background:"#febc2e"}} />
+                    <div className="sch-laptop-dot" style={{background:"#28c840"}} />
+                  </div>
+                  <div className="sch-laptop-screen">
                   {/* Sidebar */}
                   <div className="sch-lp-sidebar">
                     <div className="sch-lp-logo">Scheddio</div>
@@ -1125,9 +1192,12 @@ export default function Scheddio() {
                       <div className="sch-lp-stat"><div className="sch-lp-stat-val">2</div><div className="sch-lp-stat-label">Pending</div></div>
                     </div>
                   </div>
+                  </div>
                 </div>
-                <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
-                <div className="sch-laptop-keyboard">
+                {/* Body — keyboard half, sits flat */}
+                <div className="sch-laptop-body">
+                  <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
+                  <div className="sch-laptop-keyboard">
                   <div className="sch-lp-key-well">
                     <div className="sch-lp-key-row">
                       {Array(13).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
@@ -1151,7 +1221,8 @@ export default function Scheddio() {
                       <div className="sch-lp-key wide" />
                     </div>
                   </div>
-                  <div className="sch-lp-trackpad" />
+                    <div className="sch-lp-trackpad" />
+                  </div>
                 </div>
               </div>
               {/* Phone — daily schedule */}

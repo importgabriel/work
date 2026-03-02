@@ -279,22 +279,48 @@ const CSS = `
   .sch-lp-nav-item.active .sch-lp-nav-dot { background: rgb(93,50,239); }
 
   /* Screen main content */
-  .sch-lp-main { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .sch-lp-main { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
   .sch-lp-header { display: flex; justify-content: space-between; align-items: center; }
-  .sch-lp-header-title { font-size: 12px; font-weight: 700; color: #1a1a2e; }
-  .sch-lp-tabs { display: flex; gap: 0; }
-  .sch-lp-tab { font-size: 8px; font-weight: 600; padding: 4px 10px; color: #999; border-bottom: 2px solid transparent; }
-  .sch-lp-tab.active { color: rgb(93,50,239); border-color: rgb(93,50,239); }
+  .sch-lp-header-title { font-size: 11px; font-weight: 700; color: #1a1a2e; }
+  .sch-lp-header-btns { display: flex; gap: 4px; }
+  .sch-lp-header-btn { font-size: 7px; font-weight: 600; padding: 3px 8px; border-radius: 4px; border: 1px solid #eee; color: #999; background: #fff; }
+  .sch-lp-header-btn.active { background: rgb(93,50,239); color: #fff; border-color: rgb(93,50,239); }
 
-  /* Board cards */
-  .sch-lp-board { display: flex; gap: 8px; flex: 1; overflow: hidden; }
-  .sch-lp-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .sch-lp-col-head { font-size: 8px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
-  .sch-lp-card {
-    padding: 8px; border-radius: 7px; font-size: 8px; font-weight: 600;
-    color: #fff; line-height: 1.3;
+  /* Weekly calendar grid */
+  .sch-lp-cal { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .sch-lp-cal-days {
+    display: grid; grid-template-columns: 28px repeat(7, 1fr); gap: 0;
+    border-bottom: 1px solid #f0f0f3; padding-bottom: 4px; margin-bottom: 2px;
   }
-  .sch-lp-card-sub { font-size: 7px; font-weight: 400; opacity: .8; margin-top: 2px; }
+  .sch-lp-cal-day {
+    text-align: center; font-size: 7px; font-weight: 600; color: #bbb;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .sch-lp-cal-day.today { color: rgb(93,50,239); }
+  .sch-lp-cal-date {
+    font-size: 9px; font-weight: 700; color: #555; display: block; margin-top: 1px;
+  }
+  .sch-lp-cal-day.today .sch-lp-cal-date {
+    background: rgb(93,50,239); color: #fff; border-radius: 50%;
+    width: 16px; height: 16px; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 8px;
+  }
+  .sch-lp-cal-grid {
+    flex: 1; display: grid; grid-template-columns: 28px repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr); gap: 0; position: relative;
+  }
+  .sch-lp-cal-time {
+    font-size: 6px; color: #bbb; font-weight: 500; text-align: right;
+    padding-right: 4px; line-height: 1; padding-top: 1px;
+  }
+  .sch-lp-cal-cell {
+    border-top: 1px solid #f5f5f8; border-left: 1px solid #f5f5f8;
+    min-height: 0;
+  }
+  .sch-lp-cal-event {
+    border-radius: 3px; padding: 2px 3px; font-size: 6px; font-weight: 600;
+    color: #fff; line-height: 1.2; overflow: hidden; height: 100%;
+  }
 
   /* Stats row */
   .sch-lp-stats { display: flex; gap: 6px; }
@@ -304,6 +330,26 @@ const CSS = `
   }
   .sch-lp-stat-val { font-size: 14px; font-weight: 800; color: #1a1a2e; letter-spacing: -.3px; }
   .sch-lp-stat-label { font-size: 7px; color: #999; text-transform: uppercase; letter-spacing: .3px; margin-top: 1px; font-weight: 500; }
+
+  /* Phone schedule items */
+  .sch-ph-sched-header {
+    font-size: 9px; font-weight: 700; color: #1a1a2e;
+    padding-bottom: 4px; border-bottom: 1px solid #f0f0f3; margin-bottom: 2px;
+  }
+  .sch-ph-sched-sub { font-size: 7px; color: #999; font-weight: 500; }
+  .sch-ph-sched-item {
+    display: flex; gap: 6px; padding: 5px 0;
+    border-bottom: 1px solid #f8f8fb;
+  }
+  .sch-ph-sched-time {
+    font-size: 7px; font-weight: 600; color: #999; min-width: 28px;
+    padding-top: 2px;
+  }
+  .sch-ph-sched-block {
+    flex: 1; border-radius: 5px; padding: 5px 6px;
+    color: #fff; font-size: 8px; font-weight: 600; line-height: 1.3;
+  }
+  .sch-ph-sched-block-sub { font-size: 7px; font-weight: 400; opacity: .85; margin-top: 1px; }
 
   /* ── Phone device frame ── */
   .sch-phone {
@@ -325,18 +371,6 @@ const CSS = `
   }
   .sch-ph-logo { font-size: 9px; font-weight: 800; color: rgb(93,50,239); display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
   .sch-ph-logo::before { content:''; width:8px; height:8px; border-radius:2px; background:rgb(93,50,239); }
-  .sch-ph-item {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 7px; background: #fafafa; border-radius: 7px;
-    border: 1px solid #f0f0f2;
-  }
-  .sch-ph-item-dot { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 700; }
-  .sch-ph-item-info { flex: 1; min-width: 0; }
-  .sch-ph-item-name { font-size: 8px; font-weight: 600; color: #1a1a2e; }
-  .sch-ph-item-sub { font-size: 7px; color: #999; margin-top: 1px; }
-  .sch-ph-item-bar { width: 36px; height: 4px; border-radius: 2px; background: #eee; overflow: hidden; }
-  .sch-ph-item-bar-fill { height: 100%; border-radius: 2px; }
-
   /* ═══════════════════════ TRUST BAR ═══════════════════════ */
   .sch-trust { padding: 48px 0; text-align: center; }
   .sch-trust p { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 24px; }
@@ -919,74 +953,141 @@ export default function Scheddio() {
                       </div>
                     ))}
                   </div>
-                  {/* Main area */}
+                  {/* Main area — weekly calendar */}
                   <div className="sch-lp-main">
                     <div className="sch-lp-header">
-                      <div className="sch-lp-header-title">Calendar — April 2026</div>
-                    </div>
-                    <div className="sch-lp-tabs">
-                      {["Today","Board","Table","All","Photos","Payments"].map((t, i) => (
-                        <span key={i} className={`sch-lp-tab ${i === 1 ? "active" : ""}`}>{t}</span>
-                      ))}
-                    </div>
-                    <div className="sch-lp-board">
-                      <div className="sch-lp-col">
-                        <div className="sch-lp-col-head">Booked</div>
-                        <div className="sch-lp-card" style={{background:"rgb(93,50,239)"}}>
-                          Inspections<div className="sch-lp-card-sub">3 projects</div>
-                        </div>
-                        <div className="sch-lp-card" style={{background:"#e74c8b"}}>
-                          Twilight<div className="sch-lp-card-sub">Photos</div>
-                        </div>
+                      <div className="sch-lp-header-title">March 2026</div>
+                      <div className="sch-lp-header-btns">
+                        <span className="sch-lp-header-btn">Day</span>
+                        <span className="sch-lp-header-btn active">Week</span>
+                        <span className="sch-lp-header-btn">Month</span>
                       </div>
-                      <div className="sch-lp-col">
-                        <div className="sch-lp-col-head">In Progress</div>
-                        <div className="sch-lp-card" style={{background:"#10b981"}}>
-                          Abandoned<div className="sch-lp-card-sub">2 properties</div>
-                        </div>
-                        <div className="sch-lp-card" style={{background:"#f59e0b"}}>
-                          Showcasing<div className="sch-lp-card-sub">Final edits</div>
-                        </div>
+                    </div>
+                    <div className="sch-lp-cal">
+                      {/* Day headers */}
+                      <div className="sch-lp-cal-days">
+                        <div />
+                        {[["Mon",2],["Tue",3],["Wed",4],["Thu",5],["Fri",6],["Sat",7],["Sun",8]].map(([d,n]) => (
+                          <div key={d} className={`sch-lp-cal-day ${d === "Tue" ? "today" : ""}`}>
+                            {d}<span className="sch-lp-cal-date">{n}</span>
+                          </div>
+                        ))}
                       </div>
-                      <div className="sch-lp-col">
-                        <div className="sch-lp-col-head">Delivered</div>
-                        <div className="sch-lp-card" style={{background:"#6366f1"}}>
-                          Videography<div className="sch-lp-card-sub">Drone shots</div>
+                      {/* Time grid */}
+                      <div className="sch-lp-cal-grid">
+                        {/* Row 1: 8 AM */}
+                        <div className="sch-lp-cal-time">8 AM</div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Martinez</div>
                         </div>
-                        <div className="sch-lp-card" style={{background:"#8b5cf6"}}>
-                          Any Outdoor<div className="sch-lp-card-sub">Sent to client</div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Oak Villa</div>
                         </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        {/* Row 2: 9 AM */}
+                        <div className="sch-lp-cal-time">9 AM</div>
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#e74c8b"}}>Twilight</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Condo 4B</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Sunset</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        {/* Row 3: 10 AM */}
+                        <div className="sch-lp-cal-time">10 AM</div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#6366f1"}}>Drone</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#e74c8b"}}>Penthouse</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Garden</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        {/* Row 4: 11 AM */}
+                        <div className="sch-lp-cal-time">11 AM</div>
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Loft</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Listing</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        {/* Row 5: 12 PM */}
+                        <div className="sch-lp-cal-time">12 PM</div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Review</div>
+                        </div>
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#6366f1"}}>Studio</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        {/* Row 6: 1 PM */}
+                        <div className="sch-lp-cal-time">1 PM</div>
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Downtown</div>
+                        </div>
+                        <div className="sch-lp-cal-cell">
+                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Exterior</div>
+                        </div>
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
+                        <div className="sch-lp-cal-cell" />
                       </div>
                     </div>
                     <div className="sch-lp-stats">
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">3.4</div><div className="sch-lp-stat-label">Rating</div></div>
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">$0</div><div className="sch-lp-stat-label">Owed</div></div>
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">18</div><div className="sch-lp-stat-label">Projects</div></div>
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">55,740</div><div className="sch-lp-stat-label">Revenue</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val" style={{color:"#22c55e"}}>$4,280</div><div className="sch-lp-stat-label">Revenue</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val" style={{color:"rgb(93,50,239)"}}>14</div><div className="sch-lp-stat-label">Shoots</div></div>
+                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">2</div><div className="sch-lp-stat-label">Pending</div></div>
                     </div>
                   </div>
                 </div>
                 <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
               </div>
-              {/* Phone */}
+              {/* Phone — daily schedule */}
               <div className="sch-phone">
                 <div className="sch-phone-notch" />
                 <div className="sch-phone-screen">
                   <div className="sch-ph-logo">Scheddio</div>
+                  <div className="sch-ph-sched-header">
+                    Today <span className="sch-ph-sched-sub">Tue, Mar 3</span>
+                  </div>
                   {[
-                    { initials: "MR", name: "Residences", sub: "Miami Gardens", color: "rgb(93,50,239)", pct: 80 },
-                    { initials: "RS", name: "Resellers", sub: "Renegotiating rates", color: "#e74c8b", pct: 45 },
-                    { initials: "RC", name: "Receivables", sub: "Reconciliation pending", color: "#10b981", pct: 100 },
-                    { initials: "TR", name: "Transactions", sub: "Current businesses", color: "#f59e0b", pct: 60 },
+                    { time: "8:00", name: "Martinez Residence", sub: "123 Oak St, Miami", color: "rgb(93,50,239)" },
+                    { time: "10:00", name: "Drone Aerial Shoot", sub: "Brickell Ave, Unit 12", color: "#6366f1" },
+                    { time: "12:00", name: "Sunset Villa Listing", sub: "456 Palm Dr", color: "#f59e0b" },
+                    { time: "2:00", name: "Downtown Loft", sub: "789 Main Blvd", color: "#10b981" },
+                    { time: "4:00", name: "Exterior Reshoot", sub: "321 Pine Ave", color: "#e74c8b" },
                   ].map((item, i) => (
-                    <div key={i} className="sch-ph-item">
-                      <div className="sch-ph-item-dot" style={{background: item.color}}>{item.initials}</div>
-                      <div className="sch-ph-item-info">
-                        <div className="sch-ph-item-name">{item.name}</div>
-                        <div className="sch-ph-item-sub">{item.sub}</div>
-                      </div>
-                      <div className="sch-ph-item-bar">
-                        <div className="sch-ph-item-bar-fill" style={{width:`${item.pct}%`, background: item.color}} />
+                    <div key={i} className="sch-ph-sched-item">
+                      <div className="sch-ph-sched-time">{item.time}</div>
+                      <div className="sch-ph-sched-block" style={{background: item.color}}>
+                        {item.name}
+                        <div className="sch-ph-sched-block-sub">{item.sub}</div>
                       </div>
                     </div>
                   ))}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import * as THREE from "three";
 
 /* ── Scroll-trigger hook ── */
 function useInView(threshold = 0.12) {
@@ -239,214 +240,7 @@ const CSS = `
     border-radius: 46px; filter: blur(30px); pointer-events: none;
   }
 
-  @keyframes float3d {
-    0%,100%{ transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg) translateY(0); }
-    50%{ transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg) translateY(-9px); }
-  }
-
-  /* ── Laptop device frame (3D open laptop) ── */
-  .sch-laptop {
-    transform-style: preserve-3d;
-    transform: rotateX(28deg) rotateY(-8deg) rotateZ(1deg);
-    animation: float3d 5.8s ease-in-out infinite;
-    position: relative;
-  }
-
-  /* ── Lid (screen half) ── */
-  .sch-laptop-lid {
-    background: #1c1c1e; border-radius: 12px 12px 0 0; padding: 8px 8px 0;
-    transform-style: preserve-3d;
-    transform-origin: bottom center;
-    transform: rotateX(-68deg);
-    position: relative;
-    box-shadow:
-      0 -30px 60px rgba(0,0,0,.18),
-      0 -4px 16px rgba(0,0,0,.10);
-  }
-  /* Lid thickness — visible bottom edge at hinge */
-  .sch-laptop-lid::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 6px;
-    background: linear-gradient(180deg, #2a2a2e, #1a1a1c);
-    transform-origin: top center;
-    transform: rotateX(90deg);
-    border-radius: 0 0 2px 2px;
-  }
-  /* Lid left side edge */
-  .sch-laptop-lid::before {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 6px;
-    background: linear-gradient(90deg, #151517, #1c1c1e);
-    transform-origin: right center;
-    transform: rotateY(-90deg);
-    border-radius: 2px 0 0 2px;
-  }
-
-  .sch-laptop-toolbar {
-    display: flex; align-items: center; gap: 5px; padding: 4px 8px 6px;
-  }
-  .sch-laptop-dot { width: 7px; height: 7px; border-radius: 50%; }
-  .sch-laptop-screen {
-    background: #fff; border-radius: 4px 4px 0 0; overflow: hidden;
-    display: flex; height: 320px;
-  }
-
-  /* ── Body (keyboard half) ── */
-  .sch-laptop-body {
-    background: #1c1c1e;
-    border-radius: 0 0 12px 12px;
-    transform-style: preserve-3d;
-    position: relative;
-    box-shadow:
-      0 40px 80px rgba(0,0,0,.25),
-      0 8px 20px rgba(0,0,0,.12),
-      -6px 12px 30px rgba(93,50,239,.06);
-  }
-  /* Body front edge — visible thickness */
-  .sch-laptop-body::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 6px;
-    background: linear-gradient(180deg, #232326, #18181a);
-    transform-origin: top center;
-    transform: rotateX(90deg);
-    border-radius: 0 0 4px 4px;
-  }
-  /* Body left side edge */
-  .sch-laptop-body::before {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 6px;
-    background: linear-gradient(90deg, #151517, #1c1c1e);
-    transform-origin: right center;
-    transform: rotateY(-90deg);
-    border-radius: 0 0 0 4px;
-  }
-
-  .sch-laptop-base {
-    height: 10px; background: linear-gradient(180deg, #2a2a2e, #232326);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .sch-laptop-notch {
-    width: 60px; height: 4px; background: #333; border-radius: 0 0 3px 3px; margin-top: -1px;
-  }
-
-  /* Keyboard deck — recessed well */
-  .sch-laptop-keyboard {
-    background: linear-gradient(180deg, #232326 0%, #1e1e20 100%);
-    border-radius: 0 0 12px 12px;
-    padding: 8px 10px 6px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .sch-lp-key-well {
-    background: #1a1a1c;
-    border-radius: 6px;
-    padding: 6px 8px;
-    display: flex; flex-direction: column; gap: 3px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,.5), inset 0 0 1px rgba(0,0,0,.3);
-  }
-  .sch-lp-key-row {
-    display: flex; gap: 2.5px; justify-content: center;
-  }
-  .sch-lp-key {
-    height: 13px; border-radius: 2.5px; position: relative;
-    flex: 1; max-width: 22px;
-    /* Top face */
-    background: linear-gradient(180deg, #505054 0%, #414145 40%, #3b3b3f 100%);
-    /* 3D depth: bottom edge = side wall, subtle highlight on top */
-    box-shadow:
-      0 3px 0 0 #252528,
-      0 3.5px 0 0 #1c1c1f,
-      0 4px 2px 0 rgba(0,0,0,.35),
-      inset 0 1px 0 rgba(255,255,255,.08);
-    border: 1px solid #333336;
-    border-bottom: none;
-  }
-  .sch-lp-key.wide { max-width: 36px; }
-  .sch-lp-key.space { max-width: 100px; flex: 3; }
-  .sch-lp-trackpad {
-    width: 72px; height: 40px; border-radius: 5px;
-    background: linear-gradient(180deg, #3a3a3d, #323235);
-    margin: 8px auto 4px;
-    border: 1px solid #444448;
-    box-shadow:
-      inset 0 1px 3px rgba(0,0,0,.3),
-      0 1px 0 rgba(255,255,255,.04);
-  }
-
-  /* Screen sidebar */
-  .sch-lp-sidebar {
-    width: 130px; background: #f8f8fc; border-right: 1px solid #eee;
-    padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
-  }
-  .sch-lp-logo { font-size: 11px; font-weight: 800; color: rgb(93,50,239); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
-  .sch-lp-logo::before { content:''; width:12px; height:12px; border-radius:3px; background: rgb(93,50,239); }
-  .sch-lp-nav-item {
-    font-size: 9px; font-weight: 500; color: #888; padding: 6px 8px;
-    border-radius: 6px; display: flex; align-items: center; gap: 6px;
-  }
-  .sch-lp-nav-item.active { background: rgba(93,50,239,.08); color: rgb(93,50,239); font-weight: 600; }
-  .sch-lp-nav-dot { width: 6px; height: 6px; border-radius: 2px; background: #ccc; flex-shrink: 0; }
-  .sch-lp-nav-item.active .sch-lp-nav-dot { background: rgb(93,50,239); }
-
-  /* Screen main content */
-  .sch-lp-main { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
-  .sch-lp-header { display: flex; justify-content: space-between; align-items: center; }
-  .sch-lp-header-title { font-size: 11px; font-weight: 700; color: #1a1a2e; }
-  .sch-lp-header-btns { display: flex; gap: 4px; }
-  .sch-lp-header-btn { font-size: 7px; font-weight: 600; padding: 3px 8px; border-radius: 4px; border: 1px solid #eee; color: #999; background: #fff; }
-  .sch-lp-header-btn.active { background: rgb(93,50,239); color: #fff; border-color: rgb(93,50,239); }
-
-  /* Weekly calendar grid */
-  .sch-lp-cal { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .sch-lp-cal-days {
-    display: grid; grid-template-columns: 28px repeat(7, 1fr); gap: 0;
-    border-bottom: 1px solid #f0f0f3; padding-bottom: 4px; margin-bottom: 2px;
-  }
-  .sch-lp-cal-day {
-    text-align: center; font-size: 7px; font-weight: 600; color: #bbb;
-    text-transform: uppercase; letter-spacing: .3px;
-  }
-  .sch-lp-cal-day.today { color: rgb(93,50,239); }
-  .sch-lp-cal-date {
-    font-size: 9px; font-weight: 700; color: #555; display: block; margin-top: 1px;
-  }
-  .sch-lp-cal-day.today .sch-lp-cal-date {
-    background: rgb(93,50,239); color: #fff; border-radius: 50%;
-    width: 16px; height: 16px; display: inline-flex; align-items: center;
-    justify-content: center; font-size: 8px;
-  }
-  .sch-lp-cal-grid {
-    flex: 1; display: grid; grid-template-columns: 28px repeat(7, 1fr);
-    grid-template-rows: repeat(6, 1fr); gap: 0; position: relative;
-  }
-  .sch-lp-cal-time {
-    font-size: 6px; color: #bbb; font-weight: 500; text-align: right;
-    padding-right: 4px; line-height: 1; padding-top: 1px;
-  }
-  .sch-lp-cal-cell {
-    border-top: 1px solid #f5f5f8; border-left: 1px solid #f5f5f8;
-    min-height: 0;
-  }
-  .sch-lp-cal-event {
-    border-radius: 3px; padding: 2px 3px; font-size: 6px; font-weight: 600;
-    color: #fff; line-height: 1.2; overflow: hidden; height: 100%;
-  }
-
-  /* Stats row */
-  .sch-lp-stats { display: flex; gap: 6px; }
-  .sch-lp-stat {
-    flex: 1; background: #f7f7fb; border-radius: 7px; padding: 8px 10px;
-    border: 1px solid #eff0f2;
-  }
-  .sch-lp-stat-val { font-size: 14px; font-weight: 800; color: #1a1a2e; letter-spacing: -.3px; }
-  .sch-lp-stat-label { font-size: 7px; color: #999; text-transform: uppercase; letter-spacing: .3px; margin-top: 1px; font-weight: 500; }
+  /* Laptop is now rendered via WebGL (Laptop3D component) */
 
   /* Phone schedule items */
   .sch-ph-sched-header {
@@ -948,9 +742,300 @@ const CSS = `
     .sch-pipe-node { width: 38px; height: 38px; font-size: 14px; }
     .sch-pipe-connector { margin-top: 18px; }
     .sch-phone { display: none; }
-    .sch-lp-sidebar { width: 100px; }
   }
 `;
+
+/* ── Canvas helpers ── */
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function paintScreen(canvas) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const font = "-apple-system,system-ui,sans-serif";
+
+  /* toolbar */
+  ctx.fillStyle = "#1c1c1e";
+  ctx.fillRect(0, 0, W, 36);
+  [[14,"#ff5f57"],[30,"#febc2e"],[46,"#28c840"]].forEach(([x,c]) => {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.arc(x, 18, 5, 0, Math.PI*2); ctx.fill();
+  });
+
+  /* white content */
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 36, W, H - 36);
+
+  /* sidebar */
+  const sw = 225;
+  ctx.fillStyle = "#f8f8fc"; ctx.fillRect(0, 36, sw, H - 36);
+  ctx.fillStyle = "#eee"; ctx.fillRect(sw - 1, 36, 1, H - 36);
+
+  ctx.fillStyle = "rgb(93,50,239)";
+  rrect(ctx, 18, 56, 20, 20, 4); ctx.fill();
+  ctx.font = `bold 17px ${font}`; ctx.fillText("Scheddio", 44, 72);
+
+  ["Scheduling","Suppliers","Services","Projects","Settings","Billing"].forEach((t, i) => {
+    const y = 100 + i * 40;
+    if (i === 0) { ctx.fillStyle = "rgba(93,50,239,.08)"; rrect(ctx, 10, y, sw - 20, 34, 7); ctx.fill(); }
+    ctx.fillStyle = i === 0 ? "rgb(93,50,239)" : "#ccc";
+    ctx.beginPath(); ctx.arc(26, y + 17, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = i === 0 ? "rgb(93,50,239)" : "#888";
+    ctx.font = `${i === 0 ? "bold" : "500"} 14px ${font}`;
+    ctx.fillText(t, 40, y + 22);
+  });
+
+  /* main header */
+  const mx = sw + 18, mw = W - mx - 18;
+  ctx.font = `bold 18px ${font}`; ctx.fillStyle = "#1a1a2e"; ctx.fillText("March 2026", mx, 68);
+
+  ctx.font = `600 11px ${font}`;
+  let bx = W - 18;
+  [{t:"Month",a:false},{t:"Week",a:true},{t:"Day",a:false}].forEach(b => {
+    const tw = ctx.measureText(b.t).width + 18; bx -= tw + 5;
+    if (b.a) { ctx.fillStyle = "rgb(93,50,239)"; rrect(ctx, bx, 52, tw, 26, 5); ctx.fill(); ctx.fillStyle = "#fff"; }
+    else { ctx.strokeStyle = "#eee"; ctx.lineWidth = 1; rrect(ctx, bx, 52, tw, 26, 5); ctx.stroke(); ctx.fillStyle = "#999"; }
+    ctx.fillText(b.t, bx + 9, 69);
+  });
+
+  /* calendar */
+  const timeW = 50, calX = mx + timeW, calW = mw - timeW, calY = 90;
+  const colW = calW / 7, rowH = 60;
+  const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], dates = [2,3,4,5,6,7,8];
+
+  days.forEach((d, i) => {
+    const cx = calX + i * colW + colW / 2;
+    const isT = d === "Tue";
+    ctx.textAlign = "center";
+    ctx.font = `500 11px ${font}`; ctx.fillStyle = isT ? "rgb(93,50,239)" : "#999"; ctx.fillText(d, cx, calY + 14);
+    ctx.font = `${isT ? "bold" : "500"} 15px ${font}`; ctx.fillStyle = isT ? "rgb(93,50,239)" : "#333"; ctx.fillText(String(dates[i]), cx, calY + 34);
+    ctx.textAlign = "left";
+  });
+
+  const gridY = calY + 48;
+  ["8 AM","9 AM","10 AM","11 AM","12 PM","1 PM"].forEach((t, r) => {
+    const y = gridY + r * rowH;
+    ctx.font = `500 10px ${font}`; ctx.fillStyle = "#bbb"; ctx.fillText(t, mx, y + 12);
+    ctx.strokeStyle = "#f0f0f0"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(calX, y); ctx.lineTo(calX + calW, y); ctx.stroke();
+  });
+
+  [[0,1,"Martinez","rgb(93,50,239)"],[0,3,"Oak Villa","#10b981"],
+   [1,0,"Twilight","#e74c8b"],[1,2,"Condo 4B","rgb(93,50,239)"],[1,4,"Sunset","#f59e0b"],
+   [2,1,"Drone","#6366f1"],[2,3,"Penthouse","#e74c8b"],[2,5,"Garden","#10b981"],
+   [3,0,"Loft","#10b981"],[3,2,"Listing","#f59e0b"],
+   [4,3,"Review","rgb(93,50,239)"],[4,4,"Studio","#6366f1"],
+   [5,0,"Downtown","rgb(93,50,239)"],[5,1,"Exterior","#f59e0b"]
+  ].forEach(([r,c,n,col]) => {
+    const x = calX + c * colW + 3, y = gridY + r * rowH + 4, w = colW - 6, h = rowH - 12;
+    ctx.fillStyle = col; rrect(ctx, x, y, w, h, 5); ctx.fill();
+    ctx.font = `bold 10px ${font}`; ctx.fillStyle = "#fff"; ctx.fillText(n, x + 6, y + 16);
+  });
+
+  /* stats */
+  const sY = H - 55;
+  ctx.fillStyle = "#f8f8fc"; ctx.fillRect(mx - 18, sY, mw + 36, 55);
+  ctx.textAlign = "center";
+  [["$4,280","Revenue","#22c55e"],["14","Shoots","rgb(93,50,239)"],["2","Pending","#1a1a2e"]].forEach(([v,l,c], i) => {
+    const x = mx + i * (mw / 3) + mw / 6;
+    ctx.font = `bold 16px ${font}`; ctx.fillStyle = c; ctx.fillText(v, x, sY + 22);
+    ctx.font = `500 10px ${font}`; ctx.fillStyle = "#999"; ctx.fillText(l, x, sY + 38);
+  });
+  ctx.textAlign = "left";
+}
+
+function paintKeyboard(canvas) {
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+
+  ctx.fillStyle = "#232326"; ctx.fillRect(0, 0, W, H);
+
+  /* key well */
+  const wp = 30, ww = W - wp*2, wh = H * 0.56;
+  ctx.fillStyle = "#1a1a1c"; rrect(ctx, wp, wp, ww, wh, 10); ctx.fill();
+
+  const kp = 12, kx0 = wp + kp, kaw = ww - kp*2, kg = 4;
+  const rows = [[14,[13]],[14,[0,13]],[13,[0,12]],[12,[0,11]]];
+  const nRows = rows.length + 1;
+  const rh = (wh - kp*2 - (nRows-1)*3) / nRows;
+
+  rows.forEach(([n, wide], ri) => {
+    const y = wp + kp + ri * (rh + 3);
+    const nw = (kaw - (n-1)*kg) / (n + wide.length*0.6);
+    let x = kx0;
+    for (let k = 0; k < n; k++) {
+      const kw = wide.includes(k) ? nw*1.6 : nw;
+      const g = ctx.createLinearGradient(x,y,x,y+rh);
+      g.addColorStop(0,"#505054"); g.addColorStop(0.4,"#414145"); g.addColorStop(1,"#3b3b3f");
+      ctx.fillStyle = g; rrect(ctx,x,y,kw,rh-4,3); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.fillRect(x+1,y,kw-2,1.5);
+      ctx.fillStyle = "#252528"; rrect(ctx,x,y+rh-6,kw,3,1.5); ctx.fill();
+      x += kw + kg;
+    }
+  });
+
+  /* spacebar row */
+  const sy = wp + kp + rows.length*(rh+3);
+  const sizes = [1.5,1.5,5,1.5,1.5], total = sizes.reduce((a,b)=>a+b,0);
+  let sx = kx0;
+  sizes.forEach(s => {
+    const kw = (kaw - (sizes.length-1)*kg)*s/total;
+    const g = ctx.createLinearGradient(sx,sy,sx,sy+rh);
+    g.addColorStop(0,"#505054"); g.addColorStop(0.4,"#414145"); g.addColorStop(1,"#3b3b3f");
+    ctx.fillStyle = g; rrect(ctx,sx,sy,kw,rh-4,3); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.fillRect(sx+1,sy,kw-2,1.5);
+    ctx.fillStyle = "#252528"; rrect(ctx,sx,sy+rh-6,kw,3,1.5); ctx.fill();
+    sx += kw + kg;
+  });
+
+  /* trackpad */
+  const tw = 200, th = 120, tx = (W-tw)/2, ty = wp + wh + 35;
+  const tg = ctx.createLinearGradient(tx,ty,tx,ty+th);
+  tg.addColorStop(0,"#3a3a3d"); tg.addColorStop(1,"#323235");
+  ctx.fillStyle = tg; rrect(ctx,tx,ty,tw,th,8); ctx.fill();
+  ctx.strokeStyle = "#444448"; ctx.lineWidth = 1; rrect(ctx,tx,ty,tw,th,8); ctx.stroke();
+}
+
+/* ── WebGL Laptop ── */
+function Laptop3D() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const W = 580, H = 460;
+
+    /* scene + camera */
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(28, W / H, 0.1, 100);
+    camera.position.set(0, 3.2, 9.5);
+    camera.lookAt(0, 1.4, 0);
+
+    /* renderer */
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    el.appendChild(renderer.domElement);
+
+    /* lights */
+    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+    dir.position.set(5, 10, 7); scene.add(dir);
+    const fill = new THREE.DirectionalLight(0xd0c0ff, 0.35);
+    fill.position.set(-5, 3, -3); scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.3);
+    rim.position.set(0, -2, 8); scene.add(rim);
+
+    /* materials */
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x303034, metalness: 0.75, roughness: 0.32 });
+    const darkMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, metalness: 0.65, roughness: 0.4 });
+
+    /* screen texture */
+    const scrC = document.createElement("canvas"); scrC.width = 1024; scrC.height = 700;
+    paintScreen(scrC);
+    const scrTex = new THREE.CanvasTexture(scrC);
+    scrTex.colorSpace = THREE.SRGBColorSpace;
+
+    /* keyboard texture */
+    const kbC = document.createElement("canvas"); kbC.width = 1024; kbC.height = 640;
+    paintKeyboard(kbC);
+    const kbTex = new THREE.CanvasTexture(kbC);
+    kbTex.colorSpace = THREE.SRGBColorSpace;
+
+    /* laptop group */
+    const laptop = new THREE.Group();
+
+    /* ── base slab ── */
+    const bw = 5, bh = 0.12, bd = 3.2;
+    const base = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), bodyMat);
+    base.position.y = bh / 2;
+    laptop.add(base);
+
+    /* keyboard face on top */
+    const kbFace = new THREE.Mesh(
+      new THREE.PlaneGeometry(bw - 0.15, bd - 0.15),
+      new THREE.MeshBasicMaterial({ map: kbTex })
+    );
+    kbFace.rotation.x = -Math.PI / 2;
+    kbFace.position.y = bh + 0.001;
+    laptop.add(kbFace);
+
+    /* ── screen pivot at back edge ── */
+    const pivot = new THREE.Group();
+    pivot.position.set(0, bh, -bd / 2);
+
+    const sh = 3.3, sd = 0.06;
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(bw, sh, sd), darkMat);
+    lid.position.y = sh / 2;
+    pivot.add(lid);
+
+    /* screen face */
+    const face = new THREE.Mesh(
+      new THREE.PlaneGeometry(bw - 0.2, sh - 0.15),
+      new THREE.MeshBasicMaterial({ map: scrTex })
+    );
+    face.position.set(0, sh / 2 + 0.02, sd / 2 + 0.001);
+    pivot.add(face);
+
+    /* tilt back ~20° from vertical (110° from base) */
+    pivot.rotation.x = -(20 * Math.PI / 180);
+    laptop.add(pivot);
+
+    /* ── hinge cylinder ── */
+    const hinge = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.06, 0.06, bw - 0.4, 16),
+      bodyMat
+    );
+    hinge.rotation.z = Math.PI / 2;
+    hinge.position.set(0, bh, -bd / 2);
+    laptop.add(hinge);
+
+    /* slight Y rotation for depth */
+    laptop.rotation.y = 0.12;
+    scene.add(laptop);
+
+    /* ── animate ── */
+    const clock = new THREE.Clock();
+    let frame;
+    (function loop() {
+      frame = requestAnimationFrame(loop);
+      const t = clock.getElapsedTime();
+      laptop.position.y = Math.sin(t * 0.8) * 0.05;
+      laptop.rotation.y = 0.12 + Math.sin(t * 0.5) * 0.015;
+      renderer.render(scene, camera);
+    })();
+
+    return () => {
+      cancelAnimationFrame(frame);
+      renderer.dispose();
+      scene.traverse(o => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) {
+          if (o.material.map) o.material.map.dispose();
+          o.material.dispose();
+        }
+      });
+      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+    };
+  }, []);
+
+  return <div ref={ref} style={{ width: 580, height: 460 }} />;
+}
 
 /* ── Component ── */
 export default function Scheddio() {
@@ -1060,171 +1145,8 @@ export default function Scheddio() {
           <div className="sch-hero-right">
             <div className={`sch-mockup-wrap ${mounted ? "in" : ""}`}>
               <div className="sch-mockup-glow" />
-              {/* Laptop */}
-              <div className="sch-laptop">
-                {/* Lid — screen half, hinged open */}
-                <div className="sch-laptop-lid">
-                  <div className="sch-laptop-toolbar">
-                    <div className="sch-laptop-dot" style={{background:"#ff5f57"}} />
-                    <div className="sch-laptop-dot" style={{background:"#febc2e"}} />
-                    <div className="sch-laptop-dot" style={{background:"#28c840"}} />
-                  </div>
-                  <div className="sch-laptop-screen">
-                  {/* Sidebar */}
-                  <div className="sch-lp-sidebar">
-                    <div className="sch-lp-logo">Scheddio</div>
-                    {["Scheduling","Suppliers","Services","Projects","Settings","Billing"].map((item, i) => (
-                      <div key={i} className={`sch-lp-nav-item ${i === 0 ? "active" : ""}`}>
-                        <div className="sch-lp-nav-dot" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                  {/* Main area — weekly calendar */}
-                  <div className="sch-lp-main">
-                    <div className="sch-lp-header">
-                      <div className="sch-lp-header-title">March 2026</div>
-                      <div className="sch-lp-header-btns">
-                        <span className="sch-lp-header-btn">Day</span>
-                        <span className="sch-lp-header-btn active">Week</span>
-                        <span className="sch-lp-header-btn">Month</span>
-                      </div>
-                    </div>
-                    <div className="sch-lp-cal">
-                      {/* Day headers */}
-                      <div className="sch-lp-cal-days">
-                        <div />
-                        {[["Mon",2],["Tue",3],["Wed",4],["Thu",5],["Fri",6],["Sat",7],["Sun",8]].map(([d,n]) => (
-                          <div key={d} className={`sch-lp-cal-day ${d === "Tue" ? "today" : ""}`}>
-                            {d}<span className="sch-lp-cal-date">{n}</span>
-                          </div>
-                        ))}
-                      </div>
-                      {/* Time grid */}
-                      <div className="sch-lp-cal-grid">
-                        {/* Row 1: 8 AM */}
-                        <div className="sch-lp-cal-time">8 AM</div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Martinez</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Oak Villa</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        {/* Row 2: 9 AM */}
-                        <div className="sch-lp-cal-time">9 AM</div>
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#e74c8b"}}>Twilight</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Condo 4B</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Sunset</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        {/* Row 3: 10 AM */}
-                        <div className="sch-lp-cal-time">10 AM</div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#6366f1"}}>Drone</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#e74c8b"}}>Penthouse</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Garden</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        {/* Row 4: 11 AM */}
-                        <div className="sch-lp-cal-time">11 AM</div>
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#10b981"}}>Loft</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Listing</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        {/* Row 5: 12 PM */}
-                        <div className="sch-lp-cal-time">12 PM</div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Review</div>
-                        </div>
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#6366f1"}}>Studio</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        {/* Row 6: 1 PM */}
-                        <div className="sch-lp-cal-time">1 PM</div>
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"rgb(93,50,239)"}}>Downtown</div>
-                        </div>
-                        <div className="sch-lp-cal-cell">
-                          <div className="sch-lp-cal-event" style={{background:"#f59e0b"}}>Exterior</div>
-                        </div>
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                        <div className="sch-lp-cal-cell" />
-                      </div>
-                    </div>
-                    <div className="sch-lp-stats">
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val" style={{color:"#22c55e"}}>$4,280</div><div className="sch-lp-stat-label">Revenue</div></div>
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val" style={{color:"rgb(93,50,239)"}}>14</div><div className="sch-lp-stat-label">Shoots</div></div>
-                      <div className="sch-lp-stat"><div className="sch-lp-stat-val">2</div><div className="sch-lp-stat-label">Pending</div></div>
-                    </div>
-                  </div>
-                  </div>
-                </div>
-                {/* Body — keyboard half, sits flat */}
-                <div className="sch-laptop-body">
-                  <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
-                  <div className="sch-laptop-keyboard">
-                  <div className="sch-lp-key-well">
-                    <div className="sch-lp-key-row">
-                      {Array(13).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
-                      <div className="sch-lp-key wide" />
-                    </div>
-                    <div className="sch-lp-key-row">
-                      <div className="sch-lp-key wide" />
-                      {Array(12).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
-                      <div className="sch-lp-key wide" />
-                    </div>
-                    <div className="sch-lp-key-row">
-                      <div className="sch-lp-key wide" />
-                      {Array(11).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
-                      <div className="sch-lp-key wide" />
-                    </div>
-                    <div className="sch-lp-key-row">
-                      <div className="sch-lp-key wide" />
-                      <div className="sch-lp-key wide" />
-                      <div className="sch-lp-key space" />
-                      <div className="sch-lp-key wide" />
-                      <div className="sch-lp-key wide" />
-                    </div>
-                  </div>
-                    <div className="sch-lp-trackpad" />
-                  </div>
-                </div>
-              </div>
+              {/* 3D Laptop (WebGL) */}
+              <Laptop3D />
               {/* Phone — daily schedule */}
               <div className="sch-phone">
                 <div className="sch-phone-notch" />

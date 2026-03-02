@@ -255,12 +255,34 @@ const CSS = `
     display: flex; height: 320px;
   }
   .sch-laptop-base {
-    height: 14px; background: linear-gradient(180deg, #2a2a2e, #1c1c1e);
-    border-radius: 0 0 12px 12px; margin: 0 -8px;
+    height: 10px; background: linear-gradient(180deg, #2a2a2e, #232326);
+    margin: 0 -8px;
     display: flex; align-items: center; justify-content: center;
   }
   .sch-laptop-notch {
     width: 60px; height: 4px; background: #333; border-radius: 0 0 3px 3px; margin-top: -1px;
+  }
+
+  /* Keyboard deck */
+  .sch-laptop-keyboard {
+    background: linear-gradient(180deg, #2c2c2f 0%, #232326 100%);
+    border-radius: 0 0 12px 12px; margin: 0 -8px;
+    padding: 10px 14px 8px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .sch-lp-key-row {
+    display: flex; gap: 2px; justify-content: center;
+  }
+  .sch-lp-key {
+    height: 10px; border-radius: 2px;
+    background: #3a3a3d; flex: 1; max-width: 22px;
+  }
+  .sch-lp-key.wide { max-width: 34px; }
+  .sch-lp-key.space { max-width: 90px; flex: 3; }
+  .sch-lp-trackpad {
+    width: 70px; height: 38px; border-radius: 4px;
+    background: #333336; margin: 6px auto 2px;
+    border: 1px solid #3e3e42;
   }
 
   /* Screen sidebar */
@@ -1067,6 +1089,30 @@ export default function Scheddio() {
                   </div>
                 </div>
                 <div className="sch-laptop-base"><div className="sch-laptop-notch" /></div>
+                <div className="sch-laptop-keyboard">
+                  <div className="sch-lp-key-row">
+                    {Array(13).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
+                    <div className="sch-lp-key wide" />
+                  </div>
+                  <div className="sch-lp-key-row">
+                    <div className="sch-lp-key wide" />
+                    {Array(12).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
+                    <div className="sch-lp-key wide" />
+                  </div>
+                  <div className="sch-lp-key-row">
+                    <div className="sch-lp-key wide" />
+                    {Array(11).fill(0).map((_,i) => <div key={i} className="sch-lp-key" />)}
+                    <div className="sch-lp-key wide" />
+                  </div>
+                  <div className="sch-lp-key-row">
+                    <div className="sch-lp-key wide" />
+                    <div className="sch-lp-key wide" />
+                    <div className="sch-lp-key space" />
+                    <div className="sch-lp-key wide" />
+                    <div className="sch-lp-key wide" />
+                  </div>
+                  <div className="sch-lp-trackpad" />
+                </div>
               </div>
               {/* Phone — daily schedule */}
               <div className="sch-phone">

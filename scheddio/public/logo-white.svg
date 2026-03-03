@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <defs>
+    <linearGradient id="grad" x1="4" y1="4" x2="38" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A5FE0"/>
+      <stop offset="40%" stop-color="#7B6CDB"/>
+      <stop offset="70%" stop-color="#E0734A"/>
+      <stop offset="100%" stop-color="#F2A93B"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M10 6 L28 6 Q32 6 30 10 L20 26 Q18 30 14 30 L4 30 Q0 30 2 26 L12 10 Q14 6 10 6Z" fill="url(#grad)" opacity="0.9"/>
+    <path d="M22 18 L38 18 Q42 18 40 22 L30 38 Q28 42 24 42 L8 42 Q4 42 6 38 L16 22 Q18 18 22 18Z" fill="url(#grad)"/>
+  </g>
+  <text x="50" y="34" font-family="-apple-system, system-ui, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#ffffff" letter-spacing="-0.5">Scheddio</text>
+</svg>

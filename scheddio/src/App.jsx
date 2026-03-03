@@ -109,7 +109,8 @@ const CSS = `
     padding: 15px 56px;
     box-shadow: 0 1px 0 rgba(0,0,0,.06);
   }
-  .sch-logo { font-size: 21px; font-weight: 800; color: rgb(93,50,239); letter-spacing: -.5px; cursor: pointer; }
+  .sch-logo { cursor: pointer; display: flex; align-items: center; }
+  .sch-logo-img { height: 32px; width: auto; display: block; }
   .sch-nav-links { list-style: none; display: flex; gap: 32px; }
   .sch-nav-links a { text-decoration: none; color: #5a5a6a; font-size: 14px; font-weight: 500; transition: color .2s; }
   .sch-nav-links a:hover { color: rgb(93,50,239); }
@@ -288,8 +289,8 @@ const CSS = `
     padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 5px;
     min-height: 260px;
   }
-  .sch-ph-logo { font-size: 9px; font-weight: 800; color: rgb(93,50,239); display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
-  .sch-ph-logo::before { content:''; width:8px; height:8px; border-radius:2px; background:rgb(93,50,239); }
+  .sch-ph-logo { display: flex; align-items: center; margin-bottom: 2px; }
+  .sch-ph-logo-img { height: 14px; width: auto; display: block; }
   /* ═══════════════════════ TRUST BAR ═══════════════════════ */
   .sch-trust { padding: 48px 0; text-align: center; }
   .sch-trust p { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 24px; }
@@ -693,7 +694,8 @@ const CSS = `
   /* ═══════════════════════ FOOTER ═══════════════════════ */
   .sch-footer { background: #0f0f1a; padding: 50px 0; }
   .sch-footer .sch-container { display: flex; justify-content: space-between; align-items: center; }
-  .sch-footer-logo { font-size: 19px; font-weight: 800; color: #fff; }
+  .sch-footer-logo { display: flex; align-items: center; }
+  .sch-footer-logo .sch-logo-img { height: 28px; }
   .sch-footer-links { display: flex; gap: 28px; }
   .sch-footer-links a { color: #5a5a6a; text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s; }
   .sch-footer-links a:hover { color: #fff; }
@@ -782,9 +784,17 @@ function paintScreen(canvas) {
   ctx.fillStyle = "#f8f8fc"; ctx.fillRect(0, 36, sw, H - 36);
   ctx.fillStyle = "#eee"; ctx.fillRect(sw - 1, 36, 1, H - 36);
 
-  ctx.fillStyle = "rgb(93,50,239)";
-  rrect(ctx, 18, 56, 20, 20, 4); ctx.fill();
-  ctx.font = `bold 17px ${font}`; ctx.fillText("Scheddio", 44, 72);
+  /* logo mark — draw S-shaped icon with gradient */
+  const lg = ctx.createLinearGradient(16, 52, 38, 78);
+  lg.addColorStop(0, "#4A5FE0"); lg.addColorStop(0.5, "#E0734A"); lg.addColorStop(1, "#F2A93B");
+  ctx.fillStyle = lg;
+  ctx.beginPath(); ctx.moveTo(18, 55); ctx.lineTo(30, 55); ctx.quadraticCurveTo(33, 55, 32, 58);
+  ctx.lineTo(27, 66); ctx.quadraticCurveTo(26, 68, 24, 68); ctx.lineTo(16, 68);
+  ctx.quadraticCurveTo(13, 68, 14, 65); ctx.lineTo(19, 57); ctx.quadraticCurveTo(20, 55, 18, 55); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(24, 62); ctx.lineTo(36, 62); ctx.quadraticCurveTo(39, 62, 38, 65);
+  ctx.lineTo(33, 73); ctx.quadraticCurveTo(32, 75, 30, 75); ctx.lineTo(18, 75);
+  ctx.quadraticCurveTo(15, 75, 16, 72); ctx.lineTo(21, 64); ctx.quadraticCurveTo(22, 62, 24, 62); ctx.closePath(); ctx.fill();
+  ctx.font = `bold 17px ${font}`; ctx.fillStyle = "#1a1a2e"; ctx.fillText("Scheddio", 44, 72);
 
   ["Scheduling","Suppliers","Services","Projects","Settings","Billing"].forEach((t, i) => {
     const y = 100 + i * 40;
@@ -1097,7 +1107,7 @@ export default function Scheddio() {
 
       {/* ── Nav ── */}
       <nav className={`sch-nav ${scrollY > 50 ? "scrolled" : ""}`}>
-        <div className="sch-logo">Scheddio</div>
+        <div className="sch-logo"><img src="/logo.svg" alt="Scheddio" className="sch-logo-img" /></div>
         <ul className="sch-nav-links">
           <li><a href="#features">Features</a></li>
           <li><a href="#about">About</a></li>
@@ -1151,7 +1161,7 @@ export default function Scheddio() {
               <div className="sch-phone">
                 <div className="sch-phone-notch" />
                 <div className="sch-phone-screen">
-                  <div className="sch-ph-logo">Scheddio</div>
+                  <div className="sch-ph-logo"><img src="/logo.svg" alt="Scheddio" className="sch-ph-logo-img" /></div>
                   <div className="sch-ph-sched-header">
                     Today <span className="sch-ph-sched-sub">Tue, Mar 3</span>
                   </div>
@@ -1576,7 +1586,7 @@ export default function Scheddio() {
       {/* ── Footer ── */}
       <footer className="sch-footer">
         <div className="sch-container">
-          <div className="sch-footer-logo">Scheddio</div>
+          <div className="sch-footer-logo"><img src="/logo-white.svg" alt="Scheddio" className="sch-logo-img" /></div>
           <div className="sch-footer-links">
             <a href="#features">Features</a>
             <a href="#">Privacy</a>

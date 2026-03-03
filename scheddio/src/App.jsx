@@ -1107,7 +1107,7 @@ export default function Scheddio() {
 
       {/* ── Nav ── */}
       <nav className={`sch-nav ${scrollY > 50 ? "scrolled" : ""}`}>
-        <div className="sch-logo"><img src="/logo.svg" alt="Scheddio" className="sch-logo-img" /></div>
+        <div className="sch-logo"><img src="logo.jpg" alt="Scheddio" className="sch-logo-img" /></div>
         <ul className="sch-nav-links">
           <li><a href="#features">Features</a></li>
           <li><a href="#about">About</a></li>
@@ -1161,7 +1161,7 @@ export default function Scheddio() {
               <div className="sch-phone">
                 <div className="sch-phone-notch" />
                 <div className="sch-phone-screen">
-                  <div className="sch-ph-logo"><img src="/logo.svg" alt="Scheddio" className="sch-ph-logo-img" /></div>
+                  <div className="sch-ph-logo"><img src="/logo.jpg" alt="Scheddio" className="sch-ph-logo-img" /></div>
                   <div className="sch-ph-sched-header">
                     Today <span className="sch-ph-sched-sub">Tue, Mar 3</span>
                   </div>

@@ -227,7 +227,7 @@ const CSS = `
   .sch-hero-right { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }
 
   .sch-mockup-wrap {
-    position: relative; width: 580px;
+    position: relative; width: 720px;
     opacity: 0; transform: translateY(30px);
     transition: opacity .9s cubic-bezier(.16,1,.3,1) .28s, transform .9s cubic-bezier(.16,1,.3,1) .28s;
   }
@@ -235,7 +235,7 @@ const CSS = `
 
   /* Hero image */
   .sch-hero-img {
-    width: 100%; max-width: 580px; height: auto;
+    width: 100%; max-width: 720px; height: auto;
     border-radius: 16px;
     display: block;
   }
@@ -659,7 +659,7 @@ const CSS = `
     .sch-hero-btns { justify-content: center; }
     .sch-hero-perks { justify-content: center; }
     .sch-hero-right { flex: none; width: 100%; justify-content: center; }
-    .sch-mockup-wrap { width: 100%; max-width: 520px; }
+    .sch-mockup-wrap { width: 100%; max-width: 620px; }
     .sch-hero-h1 { font-size: 44px; }
     .sch-nav { padding: 18px 32px; }
     .sch-nav.scrolled { padding: 12px 32px; }

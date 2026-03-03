@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import * as THREE from "three";
 
 /* ── Scroll-trigger hook ── */
 function useInView(threshold = 0.12) {
@@ -229,68 +228,17 @@ const CSS = `
 
   .sch-mockup-wrap {
     position: relative; width: 580px;
-    perspective: 1800px;
     opacity: 0; transform: translateY(30px);
     transition: opacity .9s cubic-bezier(.16,1,.3,1) .28s, transform .9s cubic-bezier(.16,1,.3,1) .28s;
   }
   .sch-mockup-wrap.in { opacity: 1; transform: translateY(0); }
 
-  .sch-mockup-glow {
-    position: absolute; inset: -30px;
-    background: radial-gradient(ellipse, rgba(93,50,239,.11), transparent 64%);
-    border-radius: 46px; filter: blur(30px); pointer-events: none;
+  /* Hero image */
+  .sch-hero-img {
+    width: 100%; max-width: 580px; height: auto;
+    border-radius: 16px;
+    display: block;
   }
-
-  /* Laptop is now rendered via WebGL (Laptop3D component) */
-
-  /* Phone schedule items */
-  .sch-ph-sched-header {
-    font-size: 9px; font-weight: 700; color: #1a1a2e;
-    padding-bottom: 4px; border-bottom: 1px solid #f0f0f3; margin-bottom: 2px;
-  }
-  .sch-ph-sched-sub { font-size: 7px; color: #999; font-weight: 500; }
-  .sch-ph-sched-item {
-    display: flex; gap: 6px; padding: 5px 0;
-    border-bottom: 1px solid #f8f8fb;
-  }
-  .sch-ph-sched-time {
-    font-size: 7px; font-weight: 600; color: #999; min-width: 28px;
-    padding-top: 2px;
-  }
-  .sch-ph-sched-block {
-    flex: 1; border-radius: 5px; padding: 5px 6px;
-    color: #fff; font-size: 8px; font-weight: 600; line-height: 1.3;
-  }
-  .sch-ph-sched-block-sub { font-size: 7px; font-weight: 400; opacity: .85; margin-top: 1px; }
-
-  /* ── Phone device frame ── */
-  @keyframes float-phone {
-    0%,100%{ transform: rotateY(6deg) rotateX(-2deg) translateY(0); }
-    50%{ transform: rotateY(6deg) rotateX(-2deg) translateY(-8px); }
-  }
-  .sch-phone {
-    position: absolute; bottom: -10px; right: -30px;
-    width: 170px; background: #1c1c1e; border-radius: 18px; padding: 6px;
-    box-shadow:
-      0 24px 50px rgba(0,0,0,.25),
-      -4px 8px 20px rgba(0,0,0,.10);
-    transform-style: preserve-3d;
-    transform: rotateY(6deg) rotateX(-2deg);
-    animation: float-phone 5.8s ease-in-out infinite;
-    animation-delay: -.6s;
-    z-index: 2;
-  }
-  .sch-phone-notch {
-    width: 44px; height: 12px; background: #1c1c1e; border-radius: 0 0 8px 8px;
-    margin: 0 auto; position: relative; top: -6px; z-index: 2;
-  }
-  .sch-phone-screen {
-    background: #fff; border-radius: 12px; overflow: hidden;
-    padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 5px;
-    min-height: 260px;
-  }
-  .sch-ph-logo { display: flex; align-items: center; margin-bottom: 2px; }
-  .sch-ph-logo-img { height: 14px; width: auto; display: block; }
   /* ═══════════════════════ TRUST BAR ═══════════════════════ */
   .sch-trust { padding: 48px 0; text-align: center; }
   .sch-trust p { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 24px; }
@@ -721,7 +669,6 @@ const CSS = `
     .sch-showcase-highlights { align-items: center; }
     .sch-showcase-card { max-width: 480px; }
     .sch-showcase { gap: 72px; }
-    .sch-phone { width: 140px; right: -16px; bottom: -14px; }
   }
   @media (max-width: 720px) {
     .sch-container { padding-left: 20px; padding-right: 20px; }
@@ -743,311 +690,11 @@ const CSS = `
     .sch-pipe-flow { gap: 0; }
     .sch-pipe-node { width: 38px; height: 38px; font-size: 14px; }
     .sch-pipe-connector { margin-top: 18px; }
-    .sch-phone { display: none; }
   }
 `;
 
-/* ── Canvas helpers ── */
-function rrect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-
-function paintScreen(canvas) {
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
-  const font = "-apple-system,system-ui,sans-serif";
-
-  /* toolbar */
-  ctx.fillStyle = "#1c1c1e";
-  ctx.fillRect(0, 0, W, 36);
-  [[14,"#ff5f57"],[30,"#febc2e"],[46,"#28c840"]].forEach(([x,c]) => {
-    ctx.fillStyle = c;
-    ctx.beginPath(); ctx.arc(x, 18, 5, 0, Math.PI*2); ctx.fill();
-  });
-
-  /* white content */
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 36, W, H - 36);
-
-  /* sidebar */
-  const sw = 225;
-  ctx.fillStyle = "#f8f8fc"; ctx.fillRect(0, 36, sw, H - 36);
-  ctx.fillStyle = "#eee"; ctx.fillRect(sw - 1, 36, 1, H - 36);
-
-  /* logo mark — draw S-shaped icon with gradient */
-  const lg = ctx.createLinearGradient(16, 52, 38, 78);
-  lg.addColorStop(0, "#4A5FE0"); lg.addColorStop(0.5, "#E0734A"); lg.addColorStop(1, "#F2A93B");
-  ctx.fillStyle = lg;
-  ctx.beginPath(); ctx.moveTo(18, 55); ctx.lineTo(30, 55); ctx.quadraticCurveTo(33, 55, 32, 58);
-  ctx.lineTo(27, 66); ctx.quadraticCurveTo(26, 68, 24, 68); ctx.lineTo(16, 68);
-  ctx.quadraticCurveTo(13, 68, 14, 65); ctx.lineTo(19, 57); ctx.quadraticCurveTo(20, 55, 18, 55); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(24, 62); ctx.lineTo(36, 62); ctx.quadraticCurveTo(39, 62, 38, 65);
-  ctx.lineTo(33, 73); ctx.quadraticCurveTo(32, 75, 30, 75); ctx.lineTo(18, 75);
-  ctx.quadraticCurveTo(15, 75, 16, 72); ctx.lineTo(21, 64); ctx.quadraticCurveTo(22, 62, 24, 62); ctx.closePath(); ctx.fill();
-  ctx.font = `bold 17px ${font}`; ctx.fillStyle = "#1a1a2e"; ctx.fillText("Scheddio", 44, 72);
-
-  ["Scheduling","Suppliers","Services","Projects","Settings","Billing"].forEach((t, i) => {
-    const y = 100 + i * 40;
-    if (i === 0) { ctx.fillStyle = "rgba(93,50,239,.08)"; rrect(ctx, 10, y, sw - 20, 34, 7); ctx.fill(); }
-    ctx.fillStyle = i === 0 ? "rgb(93,50,239)" : "#ccc";
-    ctx.beginPath(); ctx.arc(26, y + 17, 5, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = i === 0 ? "rgb(93,50,239)" : "#888";
-    ctx.font = `${i === 0 ? "bold" : "500"} 14px ${font}`;
-    ctx.fillText(t, 40, y + 22);
-  });
-
-  /* main header */
-  const mx = sw + 18, mw = W - mx - 18;
-  ctx.font = `bold 18px ${font}`; ctx.fillStyle = "#1a1a2e"; ctx.fillText("March 2026", mx, 68);
-
-  ctx.font = `600 11px ${font}`;
-  let bx = W - 18;
-  [{t:"Month",a:false},{t:"Week",a:true},{t:"Day",a:false}].forEach(b => {
-    const tw = ctx.measureText(b.t).width + 18; bx -= tw + 5;
-    if (b.a) { ctx.fillStyle = "rgb(93,50,239)"; rrect(ctx, bx, 52, tw, 26, 5); ctx.fill(); ctx.fillStyle = "#fff"; }
-    else { ctx.strokeStyle = "#eee"; ctx.lineWidth = 1; rrect(ctx, bx, 52, tw, 26, 5); ctx.stroke(); ctx.fillStyle = "#999"; }
-    ctx.fillText(b.t, bx + 9, 69);
-  });
-
-  /* calendar */
-  const timeW = 50, calX = mx + timeW, calW = mw - timeW, calY = 90;
-  const colW = calW / 7, rowH = 60;
-  const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], dates = [2,3,4,5,6,7,8];
-
-  days.forEach((d, i) => {
-    const cx = calX + i * colW + colW / 2;
-    const isT = d === "Tue";
-    ctx.textAlign = "center";
-    ctx.font = `500 11px ${font}`; ctx.fillStyle = isT ? "rgb(93,50,239)" : "#999"; ctx.fillText(d, cx, calY + 14);
-    ctx.font = `${isT ? "bold" : "500"} 15px ${font}`; ctx.fillStyle = isT ? "rgb(93,50,239)" : "#333"; ctx.fillText(String(dates[i]), cx, calY + 34);
-    ctx.textAlign = "left";
-  });
-
-  const gridY = calY + 48;
-  ["8 AM","9 AM","10 AM","11 AM","12 PM","1 PM"].forEach((t, r) => {
-    const y = gridY + r * rowH;
-    ctx.font = `500 10px ${font}`; ctx.fillStyle = "#bbb"; ctx.fillText(t, mx, y + 12);
-    ctx.strokeStyle = "#f0f0f0"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(calX, y); ctx.lineTo(calX + calW, y); ctx.stroke();
-  });
-
-  [[0,1,"Martinez","rgb(93,50,239)"],[0,3,"Oak Villa","#10b981"],
-   [1,0,"Twilight","#e74c8b"],[1,2,"Condo 4B","rgb(93,50,239)"],[1,4,"Sunset","#f59e0b"],
-   [2,1,"Drone","#6366f1"],[2,3,"Penthouse","#e74c8b"],[2,5,"Garden","#10b981"],
-   [3,0,"Loft","#10b981"],[3,2,"Listing","#f59e0b"],
-   [4,3,"Review","rgb(93,50,239)"],[4,4,"Studio","#6366f1"],
-   [5,0,"Downtown","rgb(93,50,239)"],[5,1,"Exterior","#f59e0b"]
-  ].forEach(([r,c,n,col]) => {
-    const x = calX + c * colW + 3, y = gridY + r * rowH + 4, w = colW - 6, h = rowH - 12;
-    ctx.fillStyle = col; rrect(ctx, x, y, w, h, 5); ctx.fill();
-    ctx.font = `bold 10px ${font}`; ctx.fillStyle = "#fff"; ctx.fillText(n, x + 6, y + 16);
-  });
-
-  /* stats */
-  const sY = H - 55;
-  ctx.fillStyle = "#f8f8fc"; ctx.fillRect(mx - 18, sY, mw + 36, 55);
-  ctx.textAlign = "center";
-  [["$4,280","Revenue","#22c55e"],["14","Shoots","rgb(93,50,239)"],["2","Pending","#1a1a2e"]].forEach(([v,l,c], i) => {
-    const x = mx + i * (mw / 3) + mw / 6;
-    ctx.font = `bold 16px ${font}`; ctx.fillStyle = c; ctx.fillText(v, x, sY + 22);
-    ctx.font = `500 10px ${font}`; ctx.fillStyle = "#999"; ctx.fillText(l, x, sY + 38);
-  });
-  ctx.textAlign = "left";
-}
-
-function paintKeyboard(canvas) {
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
-
-  ctx.fillStyle = "#232326"; ctx.fillRect(0, 0, W, H);
-
-  /* key well */
-  const wp = 30, ww = W - wp*2, wh = H * 0.56;
-  ctx.fillStyle = "#1a1a1c"; rrect(ctx, wp, wp, ww, wh, 10); ctx.fill();
-
-  const kp = 12, kx0 = wp + kp, kaw = ww - kp*2, kg = 4;
-  const rows = [[14,[13]],[14,[0,13]],[13,[0,12]],[12,[0,11]]];
-  const nRows = rows.length + 1;
-  const rh = (wh - kp*2 - (nRows-1)*3) / nRows;
-
-  rows.forEach(([n, wide], ri) => {
-    const y = wp + kp + ri * (rh + 3);
-    const nw = (kaw - (n-1)*kg) / (n + wide.length*0.6);
-    let x = kx0;
-    for (let k = 0; k < n; k++) {
-      const kw = wide.includes(k) ? nw*1.6 : nw;
-      const g = ctx.createLinearGradient(x,y,x,y+rh);
-      g.addColorStop(0,"#505054"); g.addColorStop(0.4,"#414145"); g.addColorStop(1,"#3b3b3f");
-      ctx.fillStyle = g; rrect(ctx,x,y,kw,rh-4,3); ctx.fill();
-      ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.fillRect(x+1,y,kw-2,1.5);
-      ctx.fillStyle = "#252528"; rrect(ctx,x,y+rh-6,kw,3,1.5); ctx.fill();
-      x += kw + kg;
-    }
-  });
-
-  /* spacebar row */
-  const sy = wp + kp + rows.length*(rh+3);
-  const sizes = [1.5,1.5,5,1.5,1.5], total = sizes.reduce((a,b)=>a+b,0);
-  let sx = kx0;
-  sizes.forEach(s => {
-    const kw = (kaw - (sizes.length-1)*kg)*s/total;
-    const g = ctx.createLinearGradient(sx,sy,sx,sy+rh);
-    g.addColorStop(0,"#505054"); g.addColorStop(0.4,"#414145"); g.addColorStop(1,"#3b3b3f");
-    ctx.fillStyle = g; rrect(ctx,sx,sy,kw,rh-4,3); ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.fillRect(sx+1,sy,kw-2,1.5);
-    ctx.fillStyle = "#252528"; rrect(ctx,sx,sy+rh-6,kw,3,1.5); ctx.fill();
-    sx += kw + kg;
-  });
-
-  /* trackpad */
-  const tw = 200, th = 120, tx = (W-tw)/2, ty = wp + wh + 35;
-  const tg = ctx.createLinearGradient(tx,ty,tx,ty+th);
-  tg.addColorStop(0,"#3a3a3d"); tg.addColorStop(1,"#323235");
-  ctx.fillStyle = tg; rrect(ctx,tx,ty,tw,th,8); ctx.fill();
-  ctx.strokeStyle = "#444448"; ctx.lineWidth = 1; rrect(ctx,tx,ty,tw,th,8); ctx.stroke();
-}
-
-/* ── WebGL Laptop ── */
-function Laptop3D() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const W = 580, H = 460;
-
-    /* scene + camera */
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(28, W / H, 0.1, 100);
-    camera.position.set(0, 3.2, 9.5);
-    camera.lookAt(0, 1.4, 0);
-
-    /* renderer */
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
-    el.appendChild(renderer.domElement);
-
-    /* lights */
-    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-    dir.position.set(5, 10, 7); scene.add(dir);
-    const fill = new THREE.DirectionalLight(0xd0c0ff, 0.35);
-    fill.position.set(-5, 3, -3); scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffffff, 0.3);
-    rim.position.set(0, -2, 8); scene.add(rim);
-
-    /* materials */
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x303034, metalness: 0.75, roughness: 0.32 });
-    const darkMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, metalness: 0.65, roughness: 0.4 });
-
-    /* screen texture */
-    const scrC = document.createElement("canvas"); scrC.width = 1024; scrC.height = 700;
-    paintScreen(scrC);
-    const scrTex = new THREE.CanvasTexture(scrC);
-    scrTex.colorSpace = THREE.SRGBColorSpace;
-
-    /* keyboard texture */
-    const kbC = document.createElement("canvas"); kbC.width = 1024; kbC.height = 640;
-    paintKeyboard(kbC);
-    const kbTex = new THREE.CanvasTexture(kbC);
-    kbTex.colorSpace = THREE.SRGBColorSpace;
-
-    /* laptop group */
-    const laptop = new THREE.Group();
-
-    /* ── base slab ── */
-    const bw = 5, bh = 0.12, bd = 3.2;
-    const base = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), bodyMat);
-    base.position.y = bh / 2;
-    laptop.add(base);
-
-    /* keyboard face on top */
-    const kbFace = new THREE.Mesh(
-      new THREE.PlaneGeometry(bw - 0.15, bd - 0.15),
-      new THREE.MeshBasicMaterial({ map: kbTex })
-    );
-    kbFace.rotation.x = -Math.PI / 2;
-    kbFace.position.y = bh + 0.001;
-    laptop.add(kbFace);
-
-    /* ── screen pivot at back edge ── */
-    const pivot = new THREE.Group();
-    pivot.position.set(0, bh, -bd / 2);
-
-    const sh = 3.3, sd = 0.06;
-    const lid = new THREE.Mesh(new THREE.BoxGeometry(bw, sh, sd), darkMat);
-    lid.position.y = sh / 2;
-    pivot.add(lid);
-
-    /* screen face */
-    const face = new THREE.Mesh(
-      new THREE.PlaneGeometry(bw - 0.2, sh - 0.15),
-      new THREE.MeshBasicMaterial({ map: scrTex })
-    );
-    face.position.set(0, sh / 2 + 0.02, sd / 2 + 0.001);
-    pivot.add(face);
-
-    /* tilt back ~20° from vertical (110° from base) */
-    pivot.rotation.x = -(20 * Math.PI / 180);
-    laptop.add(pivot);
-
-    /* ── hinge cylinder ── */
-    const hinge = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.06, 0.06, bw - 0.4, 16),
-      bodyMat
-    );
-    hinge.rotation.z = Math.PI / 2;
-    hinge.position.set(0, bh, -bd / 2);
-    laptop.add(hinge);
-
-    /* slight Y rotation for depth */
-    laptop.rotation.y = 0.12;
-    scene.add(laptop);
-
-    /* ── animate ── */
-    const clock = new THREE.Clock();
-    let frame;
-    (function loop() {
-      frame = requestAnimationFrame(loop);
-      const t = clock.getElapsedTime();
-      laptop.position.y = Math.sin(t * 0.8) * 0.05;
-      laptop.rotation.y = 0.12 + Math.sin(t * 0.5) * 0.015;
-      renderer.render(scene, camera);
-    })();
-
-    return () => {
-      cancelAnimationFrame(frame);
-      renderer.dispose();
-      scene.traverse(o => {
-        if (o.geometry) o.geometry.dispose();
-        if (o.material) {
-          if (o.material.map) o.material.map.dispose();
-          o.material.dispose();
-        }
-      });
-      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  return <div ref={ref} style={{ width: 580, height: 460 }} />;
-}
-
 /* ── Component ── */
+
 export default function Scheddio() {
   const [scrollY, setScrollY] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -1154,34 +801,7 @@ export default function Scheddio() {
 
           <div className="sch-hero-right">
             <div className={`sch-mockup-wrap ${mounted ? "in" : ""}`}>
-              <div className="sch-mockup-glow" />
-              {/* 3D Laptop (WebGL) */}
-              <Laptop3D />
-              {/* Phone — daily schedule */}
-              <div className="sch-phone">
-                <div className="sch-phone-notch" />
-                <div className="sch-phone-screen">
-                  <div className="sch-ph-logo"><img src="/logo.jpg" alt="Scheddio" className="sch-ph-logo-img" /></div>
-                  <div className="sch-ph-sched-header">
-                    Today <span className="sch-ph-sched-sub">Tue, Mar 3</span>
-                  </div>
-                  {[
-                    { time: "8:00", name: "Martinez Residence", sub: "123 Oak St, Miami", color: "rgb(93,50,239)" },
-                    { time: "10:00", name: "Drone Aerial Shoot", sub: "Brickell Ave, Unit 12", color: "#6366f1" },
-                    { time: "12:00", name: "Sunset Villa Listing", sub: "456 Palm Dr", color: "#f59e0b" },
-                    { time: "2:00", name: "Downtown Loft", sub: "789 Main Blvd", color: "#10b981" },
-                    { time: "4:00", name: "Exterior Reshoot", sub: "321 Pine Ave", color: "#e74c8b" },
-                  ].map((item, i) => (
-                    <div key={i} className="sch-ph-sched-item">
-                      <div className="sch-ph-sched-time">{item.time}</div>
-                      <div className="sch-ph-sched-block" style={{background: item.color}}>
-                        {item.name}
-                        <div className="sch-ph-sched-block-sub">{item.sub}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <img src="/header.png" alt="Scheddio platform" className="sch-hero-img" />
             </div>
           </div>
         </div>

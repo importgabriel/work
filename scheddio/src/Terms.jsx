@@ -3,9 +3,11 @@ const CSS = `
     font-family: 'Sora', sans-serif;
     background: #fff;
     min-height: 100vh;
+    width: 100%;
     color: #1a1a2e;
     -webkit-font-smoothing: antialiased;
   }
+  .sch-terms *, .sch-terms *::before, .sch-terms *::after { box-sizing: border-box; }
   .sch-terms-nav {
     position: sticky; top: 0; z-index: 100;
     background: rgba(255,255,255,.92);
@@ -27,7 +29,7 @@ const CSS = `
     background: rgb(93,50,239); color: #fff;
   }
   .sch-terms-body {
-    max-width: 800px; margin: 0 auto; padding: 60px 32px 100px;
+    max-width: 900px; margin: 0 auto; padding: 60px 48px 100px; width: 100%;
   }
   .sch-terms-body h1 {
     font-size: 36px; font-weight: 800; color: #0f0f1a;
@@ -65,7 +67,7 @@ const CSS = `
     border-bottom: 1px solid #f0f0f3;
   }
   .sch-terms-footer {
-    background: #0f0f1a; padding: 40px 0;
+    background: #0f0f1a; padding: 40px 0; width: 100%;
     text-align: center; font-size: 12px; color: #484860;
     font-family: 'Sora', sans-serif;
   }

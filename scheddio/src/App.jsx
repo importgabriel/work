@@ -540,10 +540,13 @@ const CSS = `
   }
 
   /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
+  .sch-showcase-card.sch-bookings,
+  .sch-showcase-card.sch-distrib,
+  .sch-showcase-card.sch-storage { max-width: 720px; }
   .sch-bookings { overflow: hidden; }
   .sch-bookings-layout { display: flex; gap: 0; height: 100%; }
-  .sch-bookings-table { flex: 1.4; padding: 20px; overflow: hidden; }
-  .sch-bookings-sidebar { flex: 1; padding: 20px; border-left: 1px solid #f0f0f3; background: #fafbfc; }
+  .sch-bookings-table { flex: 1.8; padding: 20px; overflow: hidden; min-width: 0; }
+  .sch-bookings-sidebar { flex: 1; padding: 20px; border-left: 1px solid #f0f0f3; background: #fafbfc; min-width: 220px; }
 
   .sch-bookings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .sch-bookings-title { font-size: 15px; font-weight: 700; color: #1a1a2e; }
@@ -554,13 +557,13 @@ const CSS = `
   }
 
   .sch-bookings-cols {
-    display: grid; grid-template-columns: 1.5fr 1.2fr .7fr .7fr .6fr;
+    display: grid; grid-template-columns: 2fr 1.3fr .8fr .8fr .6fr; gap: 10px;
     font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
     padding: 0 0 8px; border-bottom: 1px solid #f0f0f3; margin-bottom: 4px;
   }
 
   .sch-bookings-row {
-    display: grid; grid-template-columns: 1.5fr 1.2fr .7fr .7fr .6fr;
+    display: grid; grid-template-columns: 2fr 1.3fr .8fr .8fr .6fr; gap: 10px;
     align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f7;
     font-size: 11px; color: #444;
   }
@@ -821,6 +824,17 @@ const CSS = `
     .sch-showcase-desc { max-width: 100%; }
     .sch-showcase-highlights { align-items: center; }
     .sch-showcase-card { max-width: 480px; }
+    .sch-showcase-card.sch-bookings,
+    .sch-showcase-card.sch-distrib,
+    .sch-showcase-card.sch-storage { max-width: 520px; }
+    .sch-bookings-layout { flex-direction: column; }
+    .sch-bookings-sidebar { border-left: none; border-top: 1px solid #f0f0f3; }
+    .sch-distrib-layout { flex-direction: column; }
+    .sch-distrib-left { border-right: none; border-bottom: 1px solid #f0f0f3; }
+    .sch-storage-top { flex-wrap: wrap; }
+    .sch-storage-stat-card { flex: 1 1 calc(50% - 8px); }
+    .sch-storage-bottom { flex-direction: column; }
+    .sch-storage-overview { border-left: none; border-top: 1px solid #f0f0f3; }
     .sch-showcase { gap: 72px; }
   }
   @media (max-width: 720px) {
@@ -1313,11 +1327,11 @@ export default function Scheddio() {
                         <span>User</span><span>Date &amp; Time</span><span>Action</span><span>Completed</span><span>Actions</span>
                       </div>
                       {[
-                        { init:"J", name:"Jena Congdon", email:"jena@ownmiami.com", id:322, date:"3/3/2026, 4:01:48 PM", action:"signup", status:"completed", bg:"#f59e0b" },
-                        { init:"B", name:"Bowie Chu", email:"buywithbowie@gmail.com", id:1838, date:"3/3/2026, 9:17:17 AM", action:"login", status:"completed", bg:"rgb(93,50,239)" },
-                        { init:"D", name:"Diana Meraz", email:"dianabenlevy@gmail.com", id:515, date:"3/3/2026, 9:03:55 AM", action:"login", status:"pending", bg:"#e74c8b" },
-                        { init:"J", name:"Jennifer Arciniegas", email:"jen@infinitemiami.com", id:800, date:"2/27/2026, 11:46:15 AM", action:"signup", status:"completed", bg:"#22c55e" },
-                        { init:"J", name:"Jennifer Arciniegas", email:"jen@infinitemiami.com", id:800, date:"2/27/2026, 11:37:18 AM", action:"signup", status:"pending", bg:"#22c55e" },
+                        { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026, 4:01 PM", action:"signup", status:"completed", bg:"#f59e0b" },
+                        { init:"M", name:"Maria Santos", email:"maria@example.com", id:1838, date:"3/3/2026, 9:17 AM", action:"login", status:"completed", bg:"rgb(93,50,239)" },
+                        { init:"D", name:"David Chen", email:"david@example.com", id:515, date:"3/3/2026, 9:03 AM", action:"login", status:"pending", bg:"#e74c8b" },
+                        { init:"S", name:"Sofia Martinez", email:"sofia@example.com", id:800, date:"2/27/2026, 11:46 AM", action:"signup", status:"completed", bg:"#22c55e" },
+                        { init:"L", name:"Liam Parker", email:"liam@example.com", id:912, date:"2/27/2026, 11:37 AM", action:"signup", status:"pending", bg:"#3b82f6" },
                       ].map((u, i) => (
                         <div key={i} className="sch-bookings-row">
                           <div className="sch-bookings-user">

@@ -559,16 +559,14 @@ const CSS = `
     padding: 5px 12px; cursor: pointer;
   }
 
-  .sch-bookings-cols {
-    display: grid; grid-template-columns: 2fr 1.3fr .8fr .8fr .6fr; gap: 10px;
+  .sch-bookings-tbl { width: 100%; border-collapse: collapse; }
+  .sch-bookings-tbl th {
     font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
-    padding: 0 0 8px; border-bottom: 1px solid #f0f0f3; margin-bottom: 4px;
+    padding: 0 8px 8px; border-bottom: 1px solid #f0f0f3; text-align: left;
   }
-
-  .sch-bookings-row {
-    display: grid; grid-template-columns: 2fr 1.3fr .8fr .8fr .6fr; gap: 10px;
-    align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f7;
-    font-size: 11px; color: #444;
+  .sch-bookings-tbl td {
+    padding: 10px 8px; border-bottom: 1px solid #f5f5f7;
+    font-size: 11px; color: #444; white-space: nowrap;
   }
 
   .sch-bookings-user { display: flex; align-items: center; gap: 8px; }
@@ -1326,34 +1324,42 @@ export default function Scheddio() {
                           Refresh
                         </span>
                       </div>
-                      <div className="sch-bookings-cols">
-                        <span style={{paddingLeft:"36px"}}>User</span><span>Date</span><span>Action</span><span>Completed</span><span>Actions</span>
-                      </div>
-                      {[
-                        { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026", action:"signup", status:"completed", bg:"#f59e0b" },
-                        { init:"M", name:"Maria Santos", email:"maria@example.com", id:1838, date:"3/3/2026", action:"login", status:"completed", bg:"rgb(93,50,239)" },
-                        { init:"D", name:"David Chen", email:"david@example.com", id:515, date:"3/3/2026", action:"login", status:"pending", bg:"#e74c8b" },
-                        { init:"S", name:"Sofia Martinez", email:"sofia@example.com", id:800, date:"2/27/2026", action:"signup", status:"completed", bg:"#22c55e" },
-                        { init:"L", name:"Liam Parker", email:"liam@example.com", id:912, date:"2/27/2026", action:"signup", status:"pending", bg:"#3b82f6" },
-                      ].map((u, i) => (
-                        <div key={i} className="sch-bookings-row">
-                          <div className="sch-bookings-user">
-                            <div className="sch-bookings-avatar" style={{background:u.bg}}>{u.init}</div>
-                            <div className="sch-bookings-user-info">
-                              <div className="sch-bookings-user-name">{u.name}</div>
-                              <div className="sch-bookings-user-email">{u.email}</div>
-                              <div className="sch-bookings-user-id">ID: {u.id}</div>
-                            </div>
-                          </div>
-                          <span>{u.date}</span>
-                          <span>{u.action}</span>
-                          <span><span className={`sch-bookings-pill ${u.status}`}>{u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></span>
-                          <span className="sch-bookings-view">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            View
-                          </span>
-                        </div>
-                      ))}
+                      <table className="sch-bookings-tbl">
+                        <thead>
+                          <tr><th>User</th><th>Date</th><th>Action</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                        {[
+                          { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026", action:"signup", status:"completed", bg:"#f59e0b" },
+                          { init:"M", name:"Maria Santos", email:"maria@example.com", id:1838, date:"3/3/2026", action:"login", status:"completed", bg:"rgb(93,50,239)" },
+                          { init:"D", name:"David Chen", email:"david@example.com", id:515, date:"3/3/2026", action:"login", status:"pending", bg:"#e74c8b" },
+                          { init:"S", name:"Sofia Martinez", email:"sofia@example.com", id:800, date:"2/27/2026", action:"signup", status:"completed", bg:"#22c55e" },
+                          { init:"L", name:"Liam Parker", email:"liam@example.com", id:912, date:"2/27/2026", action:"signup", status:"pending", bg:"#3b82f6" },
+                        ].map((u, i) => (
+                          <tr key={i}>
+                            <td>
+                              <div className="sch-bookings-user">
+                                <div className="sch-bookings-avatar" style={{background:u.bg}}>{u.init}</div>
+                                <div className="sch-bookings-user-info">
+                                  <div className="sch-bookings-user-name">{u.name}</div>
+                                  <div className="sch-bookings-user-email">{u.email}</div>
+                                  <div className="sch-bookings-user-id">ID: {u.id}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>{u.date}</td>
+                            <td>{u.action}</td>
+                            <td><span className={`sch-bookings-pill ${u.status}`}>{u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></td>
+                            <td>
+                              <span className="sch-bookings-view">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                View
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                        </tbody>
+                      </table>
                       <div className="sch-bookings-showing">Showing 1 to 20 of 288 results</div>
                       <div className="sch-bookings-pagination">
                         <span>&lt;</span><span className="active">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>&gt;</span>

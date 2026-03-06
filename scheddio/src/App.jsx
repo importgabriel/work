@@ -1433,10 +1433,6 @@ export default function Scheddio() {
                           <text x="80" y="92" textAnchor="middle" fontSize="22" fill="#1a1a2e" fontFamily="Sora,sans-serif" fontWeight="800">36</text>
                         </svg>
                       </div>
-                      <div className="sch-donut-legend" style={{marginBottom:"14px"}}>
-                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"#10b981"}}/> Manual Booking</div>
-                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"rgb(93,50,239)"}}/> Online Booking</div>
-                      </div>
                       <div className="sch-distrib-stats">
                         <div className="sch-distrib-stat">
                           <div className="sch-distrib-stat-dot" style={{background:"#10b981"}}/>

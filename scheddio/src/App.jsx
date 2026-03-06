@@ -1631,7 +1631,7 @@ export default function Scheddio() {
           <div className="sch-footer-links">
             <a href="#features">Features</a>
             <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <a href="#terms">Terms</a>
             <a href="#">Contact</a>
           </div>
           <div className="sch-footer-copy">© 2026 Scheddio. All rights reserved.</div>

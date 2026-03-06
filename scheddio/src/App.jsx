@@ -540,9 +540,12 @@ const CSS = `
   }
 
   /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
-  .sch-showcase-card.sch-bookings { max-width: 1060px; }
+  .sch-showcase-card.sch-bookings,
   .sch-showcase-card.sch-distrib,
-  .sch-showcase-card.sch-storage { max-width: 860px; }
+  .sch-showcase-card.sch-storage { max-width: 100%; }
+  .sch-showcase-row:has(.sch-bookings) .sch-showcase-mockup,
+  .sch-showcase-row:has(.sch-distrib) .sch-showcase-mockup,
+  .sch-showcase-row:has(.sch-storage) .sch-showcase-mockup { flex: 2; }
   .sch-bookings { overflow: hidden; }
   .sch-bookings-layout { display: flex; gap: 0; height: 100%; }
   .sch-bookings-table { flex: 1.8; padding: 20px; overflow: hidden; min-width: 0; }
@@ -826,7 +829,7 @@ const CSS = `
     .sch-showcase-card { max-width: 480px; }
     .sch-showcase-card.sch-bookings,
     .sch-showcase-card.sch-distrib,
-    .sch-showcase-card.sch-storage { max-width: 580px; }
+    .sch-showcase-card.sch-storage { max-width: 100%; }
     .sch-bookings-layout { flex-direction: column; }
     .sch-bookings-sidebar { border-left: none; border-top: 1px solid #f0f0f3; }
     .sch-distrib-layout { flex-direction: column; }

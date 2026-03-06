@@ -754,7 +754,7 @@ export default function Scheddio() {
 
       {/* ── Nav ── */}
       <nav className={`sch-nav ${scrollY > 50 ? "scrolled" : ""}`}>
-        <div className="sch-logo"><img src="logo.jpg" alt="Scheddio" className="sch-logo-img" /></div>
+        <div className="sch-logo"><img src="/logo/LOGOS/Logo Color No Background (1122 x 1122).png" alt="Scheddio" className="sch-logo-img" /></div>
         <ul className="sch-nav-links">
           <li><a href="#features">Features</a></li>
           <li><a href="#about">About</a></li>
@@ -1206,7 +1206,7 @@ export default function Scheddio() {
       {/* ── Footer ── */}
       <footer className="sch-footer">
         <div className="sch-container">
-          <div className="sch-footer-logo"><img src="/logo-white.svg" alt="Scheddio" className="sch-logo-img" /></div>
+          <div className="sch-footer-logo"><img src="/logo/LOGOS/Logo White (1121x1122).png" alt="Scheddio" className="sch-logo-img" /></div>
           <div className="sch-footer-links">
             <a href="#features">Features</a>
             <a href="#">Privacy</a>

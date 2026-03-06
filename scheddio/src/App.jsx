@@ -1487,17 +1487,17 @@ export default function Scheddio() {
                   <div className="sch-showcase-card-glow" />
                   <div className="sch-storage-top">
                     {[
-                      {label:"Total Projects",val:"178",icon:"\u{1F4C2}",bg:"rgba(93,50,239,.08)",color:"rgb(93,50,239)"},
-                      {label:"Pending Projects",val:"15",icon:"\u{23F3}",bg:"rgba(245,158,11,.08)",color:"#f59e0b"},
-                      {label:"Delivered Projects",val:"163",icon:"\u2705",bg:"rgba(34,197,94,.08)",color:"#22c55e"},
-                      {label:"Storage Used",val:"31.02 GB",icon:"\u{1F4BE}",bg:"rgba(232,62,140,.08)",color:"#e74c8b"},
+                      {label:"Total Projects",val:"178",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgb(93,50,239)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,bg:"rgba(93,50,239,.08)"},
+                      {label:"Pending Projects",val:"15",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,bg:"rgba(245,158,11,.08)"},
+                      {label:"Delivered Projects",val:"163",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,bg:"rgba(34,197,94,.08)"},
+                      {label:"Storage Used",val:"31.02 GB",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c8b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>,bg:"rgba(232,62,140,.08)"},
                     ].map((s,i)=>(
                       <div key={i} className="sch-storage-stat-card">
                         <div>
                           <div className="sch-storage-stat-label">{s.label}</div>
                           <div className="sch-storage-stat-val">{s.val}</div>
                         </div>
-                        <div className="sch-storage-stat-icon" style={{background:s.bg,color:s.color,fontSize:"18px"}}>{s.icon}</div>
+                        <div className="sch-storage-stat-icon" style={{background:s.bg}}>{s.icon}</div>
                       </div>
                     ))}
                   </div>
@@ -1530,13 +1530,13 @@ export default function Scheddio() {
                       <div className="sch-storage-usage">31.02 GB / 50.00 GB</div>
                       <div className="sch-storage-remaining">18.98 GB remaining</div>
                       {[
-                        {icon:"\u{1F465}",label:"Active Clients",sub:"Currently working with",val:"26"},
-                        {icon:"\u{1F4C5}",label:"This Month",sub:"Projects completed",val:"2"},
-                        {icon:"\u2B06\uFE0F",label:"Files Uploaded",sub:"This week",val:"820"},
+                        {icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(93,50,239)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,label:"Active Clients",sub:"Currently working with",val:"26"},
+                        {icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(93,50,239)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,label:"This Month",sub:"Projects completed",val:"2"},
+                        {icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(93,50,239)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,label:"Files Uploaded",sub:"This week",val:"820"},
                       ].map((r,i)=>(
                         <div key={i} className="sch-storage-info-row">
                           <div className="sch-storage-info-left">
-                            <div className="sch-storage-info-icon" style={{background:"#f4f2ff",fontSize:"16px"}}>{r.icon}</div>
+                            <div className="sch-storage-info-icon" style={{background:"#f4f2ff"}}>{r.icon}</div>
                             <div>
                               <div className="sch-storage-info-label">{r.label}</div>
                               <div className="sch-storage-info-sub">{r.sub}</div>

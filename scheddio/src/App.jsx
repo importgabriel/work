@@ -68,6 +68,24 @@ const features = [
     desc: "Smart insights powered by AI that help you optimize pricing, find new markets, and grow revenue — automatically.",
     highlights: ["AI pricing recommendations", "Market opportunity alerts", "Revenue growth tracking"],
   },
+  {
+    id: "online-bookings",
+    title: "Online Bookings",
+    desc: "Track how many clients successfully self-book services using your online form — no assistance needed. Monitor completion rates in real time.",
+    highlights: ["Self-service booking portal", "Real-time completion tracking", "Detailed user interaction logs"],
+  },
+  {
+    id: "booking-distribution",
+    title: "Booking Distribution",
+    desc: "See the split between manual and online bookings at a glance. Understand trends over time so you can optimize your booking flow.",
+    highlights: ["Manual vs online breakdown", "14-day trend analysis", "Actionable booking insights"],
+  },
+  {
+    id: "media-storage",
+    title: "Media Storage",
+    desc: "Keep tabs on your storage usage, project delivery stats, and file uploads — all from one dashboard. Never worry about running out of space.",
+    highlights: ["Visual storage overview", "Project completion trends", "Active client tracking"],
+  },
 ];
 
 const steps = [
@@ -521,6 +539,141 @@ const CSS = `
     padding: 5px 14px; border-radius: 6px; margin-left: 6px;
   }
 
+  /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
+  .sch-bookings { overflow: hidden; }
+  .sch-bookings-layout { display: flex; gap: 0; height: 100%; }
+  .sch-bookings-table { flex: 1.4; padding: 20px; overflow: hidden; }
+  .sch-bookings-sidebar { flex: 1; padding: 20px; border-left: 1px solid #f0f0f3; background: #fafbfc; }
+
+  .sch-bookings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .sch-bookings-title { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .sch-bookings-refresh {
+    display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
+    color: #555; background: #fff; border: 1px solid #e0e0e5; border-radius: 7px;
+    padding: 5px 12px; cursor: pointer;
+  }
+
+  .sch-bookings-cols {
+    display: grid; grid-template-columns: 1.5fr 1.2fr .7fr .7fr .6fr;
+    font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+    padding: 0 0 8px; border-bottom: 1px solid #f0f0f3; margin-bottom: 4px;
+  }
+
+  .sch-bookings-row {
+    display: grid; grid-template-columns: 1.5fr 1.2fr .7fr .7fr .6fr;
+    align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f7;
+    font-size: 11px; color: #444;
+  }
+
+  .sch-bookings-user { display: flex; align-items: center; gap: 8px; }
+  .sch-bookings-avatar {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .sch-bookings-user-info { min-width: 0; }
+  .sch-bookings-user-name { font-weight: 600; color: #1a1a2e; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sch-bookings-user-email { font-size: 9px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sch-bookings-user-id { font-size: 9px; color: #bbb; }
+
+  .sch-bookings-pill {
+    display: inline-flex; padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  }
+  .sch-bookings-pill.completed { background: rgba(34,197,94,.1); color: #16a34a; }
+  .sch-bookings-pill.pending { background: rgba(245,158,11,.1); color: #d97706; }
+
+  .sch-bookings-view {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; color: #888; cursor: pointer;
+  }
+
+  .sch-bookings-pagination {
+    display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 12px;
+  }
+  .sch-bookings-pagination span {
+    font-size: 9px; color: #777; padding: 3px 7px; border-radius: 4px; cursor: pointer;
+  }
+  .sch-bookings-pagination span.active { background: rgb(93,50,239); color: #fff; }
+  .sch-bookings-showing { font-size: 9px; color: #999; margin-top: 6px; }
+
+  /* Completion sidebar */
+  .sch-completion-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+  .sch-completion-sub { font-size: 10px; color: #999; margin-bottom: 16px; }
+
+  .sch-completion-cards { display: flex; gap: 10px; margin-bottom: 16px; }
+  .sch-completion-card {
+    flex: 1; padding: 10px 12px; border-radius: 10px; background: #fff; border: 1px solid #f0f0f3;
+  }
+  .sch-completion-card-label { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #888; font-weight: 500; margin-bottom: 4px; }
+  .sch-completion-card-val { font-size: 22px; font-weight: 800; }
+  .sch-completion-card-pct { font-size: 9px; color: #999; }
+
+  .sch-donut-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
+  .sch-donut-legend { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 6px; }
+  .sch-donut-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #666; font-weight: 500; }
+  .sch-donut-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .sch-donut-total { text-align: center; font-size: 10px; color: #888; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+  /* ═══════════════════════ BOOKING DISTRIBUTION ═══════════════════════ */
+  .sch-distrib { overflow: hidden; }
+  .sch-distrib-layout { display: flex; gap: 0; height: 100%; }
+  .sch-distrib-left { flex: 1; padding: 24px; border-right: 1px solid #f0f0f3; }
+  .sch-distrib-right { flex: 1.5; padding: 24px; }
+
+  .sch-distrib-title { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+  .sch-distrib-sub { font-size: 10px; color: #999; margin-bottom: 20px; }
+
+  .sch-distrib-stats { display: flex; gap: 20px; margin-top: 14px; margin-bottom: 10px; }
+  .sch-distrib-stat { display: flex; align-items: center; gap: 6px; }
+  .sch-distrib-stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .sch-distrib-stat-label { font-size: 10px; color: #888; font-weight: 500; }
+  .sch-distrib-stat-val { font-size: 18px; font-weight: 800; color: #1a1a2e; }
+  .sch-distrib-stat-pct { font-size: 9px; color: #999; }
+  .sch-distrib-total { font-size: 12px; color: #666; font-weight: 600; margin-top: 6px; display: flex; justify-content: space-between; border-top: 1px solid #f0f0f3; padding-top: 10px; }
+
+  .sch-distrib-trend-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+  .sch-distrib-trend-sub { font-size: 10px; color: #999; margin-bottom: 16px; }
+  .sch-distrib-trend-legend { display: flex; gap: 14px; justify-content: flex-end; margin-bottom: 12px; }
+  .sch-distrib-trend-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #666; font-weight: 500; }
+  .sch-distrib-trend-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ═══════════════════════ MEDIA STORAGE ═══════════════════════ */
+  .sch-storage { overflow: hidden; }
+  .sch-storage-top { display: flex; gap: 12px; padding: 20px 20px 0; }
+  .sch-storage-stat-card {
+    flex: 1; padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid #f0f0f3;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sch-storage-stat-label { font-size: 10px; color: #888; font-weight: 500; }
+  .sch-storage-stat-val { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-top: 2px; }
+  .sch-storage-stat-icon {
+    width: 32px; height: 32px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 14px;
+  }
+
+  .sch-storage-bottom { display: flex; gap: 0; margin-top: 16px; }
+  .sch-storage-chart { flex: 1; padding: 20px; }
+  .sch-storage-overview { flex: 1; padding: 20px; border-left: 1px solid #f0f0f3; }
+
+  .sch-storage-chart-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+  .sch-storage-chart-sub { font-size: 10px; color: #999; margin-bottom: 4px; }
+  .sch-storage-chart-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #22c55e; margin-bottom: 12px; }
+
+  .sch-storage-overview-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+  .sch-storage-usage { text-align: center; font-size: 11px; color: #888; margin-bottom: 4px; }
+  .sch-storage-remaining { text-align: center; font-size: 10px; color: #bbb; margin-bottom: 14px; }
+
+  .sch-storage-info-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: 10px; background: #f9f9fb; margin-bottom: 6px;
+  }
+  .sch-storage-info-left { display: flex; align-items: center; gap: 10px; }
+  .sch-storage-info-icon {
+    width: 30px; height: 30px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 13px;
+  }
+  .sch-storage-info-label { font-size: 11px; font-weight: 600; color: #1a1a2e; }
+  .sch-storage-info-sub { font-size: 9px; color: #999; }
+  .sch-storage-info-val { font-size: 18px; font-weight: 800; color: #1a1a2e; }
+
   /* ═══════════════════════ HOW IT WORKS ═══════════════════════ */
   .sch-how { background: linear-gradient(180deg, #fff 0%, #f4f2ff 100%); }
   .sch-how .sch-section-head { align-items: center; text-align: center; max-width: 100%; }
@@ -704,6 +857,9 @@ export default function Scheddio() {
   const [feat2Ref, feat2Vis] = useInView(0.15);
   const [feat3Ref, feat3Vis] = useInView(0.15);
   const [feat4Ref, feat4Vis] = useInView(0.15);
+  const [feat5Ref, feat5Vis] = useInView(0.15);
+  const [feat6Ref, feat6Vis] = useInView(0.15);
+  const [feat7Ref, feat7Vis] = useInView(0.15);
   const [howRef, howVis] = useInView();
   const [statsRef, statsVis] = useInView();
   const [testRef, testVis] = useInView();
@@ -1130,6 +1286,252 @@ export default function Scheddio() {
                 </div>
               </div>
             </div>
+
+            {/* ── Row 5: Online Bookings ── */}
+            <div ref={feat5Ref} className={`sch-showcase-row ${feat5Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Analytics</div>
+                <h3 className="sch-showcase-title">{features[4].title}</h3>
+                <p className="sch-showcase-desc">{features[4].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[4].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-bookings">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-bookings-layout">
+                    <div className="sch-bookings-table">
+                      <div className="sch-bookings-header">
+                        <span className="sch-bookings-title">User Interactions</span>
+                        <span className="sch-bookings-refresh">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                          Refresh
+                        </span>
+                      </div>
+                      <div className="sch-bookings-cols">
+                        <span>User</span><span>Date &amp; Time</span><span>Action</span><span>Completed</span><span>Actions</span>
+                      </div>
+                      {[
+                        { init:"J", name:"Jena Congdon", email:"jena@ownmiami.com", id:322, date:"3/3/2026, 4:01:48 PM", action:"signup", status:"completed", bg:"#f59e0b" },
+                        { init:"B", name:"Bowie Chu", email:"buywithbowie@gmail.com", id:1838, date:"3/3/2026, 9:17:17 AM", action:"login", status:"completed", bg:"rgb(93,50,239)" },
+                        { init:"D", name:"Diana Meraz", email:"dianabenlevy@gmail.com", id:515, date:"3/3/2026, 9:03:55 AM", action:"login", status:"pending", bg:"#e74c8b" },
+                        { init:"J", name:"Jennifer Arciniegas", email:"jen@infinitemiami.com", id:800, date:"2/27/2026, 11:46:15 AM", action:"signup", status:"completed", bg:"#22c55e" },
+                        { init:"J", name:"Jennifer Arciniegas", email:"jen@infinitemiami.com", id:800, date:"2/27/2026, 11:37:18 AM", action:"signup", status:"pending", bg:"#22c55e" },
+                      ].map((u, i) => (
+                        <div key={i} className="sch-bookings-row">
+                          <div className="sch-bookings-user">
+                            <div className="sch-bookings-avatar" style={{background:u.bg}}>{u.init}</div>
+                            <div className="sch-bookings-user-info">
+                              <div className="sch-bookings-user-name">{u.name}</div>
+                              <div className="sch-bookings-user-email">{u.email}</div>
+                              <div className="sch-bookings-user-id">ID: {u.id}</div>
+                            </div>
+                          </div>
+                          <span>{u.date}</span>
+                          <span>{u.action}</span>
+                          <span><span className={`sch-bookings-pill ${u.status}`}>{u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></span>
+                          <span className="sch-bookings-view">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            View
+                          </span>
+                        </div>
+                      ))}
+                      <div className="sch-bookings-showing">Showing 1 to 20 of 288 results</div>
+                      <div className="sch-bookings-pagination">
+                        <span>&lt;</span><span className="active">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>&gt;</span>
+                      </div>
+                    </div>
+                    <div className="sch-bookings-sidebar">
+                      <div className="sch-completion-title">Completion Status</div>
+                      <div className="sch-completion-sub">User interaction completion overview</div>
+                      <div className="sch-completion-cards">
+                        <div className="sch-completion-card">
+                          <div className="sch-completion-card-label">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                            Completed
+                          </div>
+                          <div className="sch-completion-card-val" style={{color:"#22c55e"}}>50</div>
+                          <div className="sch-completion-card-pct">50% of total</div>
+                        </div>
+                        <div className="sch-completion-card">
+                          <div className="sch-completion-card-label">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            Pending
+                          </div>
+                          <div className="sch-completion-card-val" style={{color:"#f59e0b"}}>50</div>
+                          <div className="sch-completion-card-pct">50% of total</div>
+                        </div>
+                      </div>
+                      <div className="sch-donut-wrap">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
+                          <circle cx="80" cy="80" r="56" fill="none" stroke="#f59e0b" strokeWidth="22"/>
+                          <circle cx="80" cy="80" r="56" fill="none" stroke="#22c55e" strokeWidth="22" strokeDasharray={`${0.5*2*Math.PI*56} ${2*Math.PI*56}`} strokeDashoffset="0" transform="rotate(-90 80 80)"/>
+                          <text x="80" y="74" textAnchor="middle" fontSize="11" fill="#888" fontFamily="Sora,sans-serif" fontWeight="500">Total</text>
+                          <text x="80" y="94" textAnchor="middle" fontSize="22" fill="#1a1a2e" fontFamily="Sora,sans-serif" fontWeight="800">100</text>
+                        </svg>
+                      </div>
+                      <div className="sch-donut-legend">
+                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"#22c55e"}}/> Completed</div>
+                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"#f59e0b"}}/> Pending</div>
+                      </div>
+                      <div className="sch-donut-total">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Total Interactions: <strong>100</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Row 6: Booking Distribution (reversed) ── */}
+            <div ref={feat6Ref} className={`sch-showcase-row reverse ${feat6Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Insights</div>
+                <h3 className="sch-showcase-title">{features[5].title}</h3>
+                <p className="sch-showcase-desc">{features[5].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[5].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-distrib">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-distrib-layout">
+                    <div className="sch-distrib-left">
+                      <div className="sch-distrib-title">Booking Distribution</div>
+                      <div className="sch-distrib-sub">Distribution of manual vs online bookings</div>
+                      <div className="sch-donut-wrap">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
+                          <circle cx="80" cy="80" r="56" fill="none" stroke="rgb(93,50,239)" strokeWidth="22"/>
+                          <circle cx="80" cy="80" r="56" fill="none" stroke="#10b981" strokeWidth="22" strokeDasharray={`${0.472*2*Math.PI*56} ${2*Math.PI*56}`} strokeDashoffset="0" transform="rotate(-90 80 80)"/>
+                          <text x="80" y="70" textAnchor="middle" fontSize="10" fill="#888" fontFamily="Sora,sans-serif" fontWeight="500">Total Bookings</text>
+                          <text x="80" y="92" textAnchor="middle" fontSize="22" fill="#1a1a2e" fontFamily="Sora,sans-serif" fontWeight="800">36</text>
+                        </svg>
+                      </div>
+                      <div className="sch-donut-legend" style={{marginBottom:"14px"}}>
+                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"#10b981"}}/> Manual Booking</div>
+                        <div className="sch-donut-legend-item"><div className="sch-donut-legend-dot" style={{background:"rgb(93,50,239)"}}/> Online Booking</div>
+                      </div>
+                      <div className="sch-distrib-stats">
+                        <div className="sch-distrib-stat">
+                          <div className="sch-distrib-stat-dot" style={{background:"#10b981"}}/>
+                          <div>
+                            <div className="sch-distrib-stat-label">Manual Booking</div>
+                            <div style={{display:"flex",alignItems:"baseline",gap:"6px"}}><span className="sch-distrib-stat-val">17</span><span className="sch-distrib-stat-pct">47.2%</span></div>
+                          </div>
+                        </div>
+                        <div className="sch-distrib-stat">
+                          <div className="sch-distrib-stat-dot" style={{background:"rgb(93,50,239)"}}/>
+                          <div>
+                            <div className="sch-distrib-stat-label">Online Booking</div>
+                            <div style={{display:"flex",alignItems:"baseline",gap:"6px"}}><span className="sch-distrib-stat-val">19</span><span className="sch-distrib-stat-pct">52.8%</span></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="sch-distrib-total"><span>Total Bookings</span><strong>36</strong></div>
+                    </div>
+                    <div className="sch-distrib-right">
+                      <div className="sch-distrib-trend-title">Booking Distribution Trends (Last 14 Days)</div>
+                      <div className="sch-distrib-trend-sub">Manual vs Online booking trends over the last 14 days</div>
+                      <div className="sch-distrib-trend-legend">
+                        <div className="sch-distrib-trend-legend-item"><div className="sch-distrib-trend-legend-dot" style={{background:"rgb(93,50,239)"}}/> Manual Booking</div>
+                        <div className="sch-distrib-trend-legend-item"><div className="sch-distrib-trend-legend-dot" style={{background:"#10b981"}}/> Online Booking</div>
+                      </div>
+                      <svg viewBox="0 0 440 180" style={{width:"100%",height:"auto"}}>
+                        {[0,1,2,3,4,5].map(i=><g key={i}><line x1="40" y1={20+i*28} x2="430" y2={20+i*28} stroke="#f0f0f3" strokeWidth="1"/><text x="30" y={24+i*28} textAnchor="end" fontSize="9" fill="#bbb" fontFamily="Sora,sans-serif">{5-i}</text></g>)}
+                        {["Feb 18","Feb 19","Feb 20","Feb 21","Feb 22","Feb 23","Feb 24","Feb 25","Feb 26","Feb 27","Feb 28","Mar 1","Mar 2","Mar 3","Mar 4"].map((d,i)=><text key={d} x={44+i*26.5} y={172} textAnchor="middle" fontSize="7" fill="#bbb" fontFamily="Sora,sans-serif">{d}</text>)}
+                        <path d="M44,104 L70.5,76 L97,76 L123.5,132 L150,104 L176.5,132 L203,76 L229.5,48 L256,104 L282.5,132 L309,104 L335.5,132 L362,76 L388.5,104 L415,48" fill="none" stroke="rgb(93,50,239)" strokeWidth="2"/>
+                        <path d="M44,104 L70.5,76 L97,76 L123.5,132 L150,104 L176.5,132 L203,76 L229.5,48 L256,104 L282.5,132 L309,104 L335.5,132 L362,76 L388.5,104 L415,48 L415,160 L44,160Z" fill="rgba(93,50,239,.08)"/>
+                        <path d="M44,76 L70.5,76 L97,48 L123.5,76 L150,132 L176.5,104 L203,48 L229.5,76 L256,76 L282.5,104 L309,76 L335.5,48 L362,76 L388.5,48 L415,48" fill="none" stroke="#10b981" strokeWidth="2"/>
+                        <path d="M44,76 L70.5,76 L97,48 L123.5,76 L150,132 L176.5,104 L203,48 L229.5,76 L256,76 L282.5,104 L309,76 L335.5,48 L362,76 L388.5,48 L415,48 L415,160 L44,160Z" fill="rgba(16,185,129,.08)"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Row 7: Media Storage Statistics ── */}
+            <div ref={feat7Ref} className={`sch-showcase-row ${feat7Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Storage</div>
+                <h3 className="sch-showcase-title">{features[6].title}</h3>
+                <p className="sch-showcase-desc">{features[6].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[6].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-storage">
+                  <div className="sch-showcase-card-glow" />
+                  <div className="sch-storage-top">
+                    {[
+                      {label:"Total Projects",val:"178",icon:"\u{1F4C2}",bg:"rgba(93,50,239,.08)",color:"rgb(93,50,239)"},
+                      {label:"Pending Projects",val:"15",icon:"\u{23F3}",bg:"rgba(245,158,11,.08)",color:"#f59e0b"},
+                      {label:"Delivered Projects",val:"163",icon:"\u2705",bg:"rgba(34,197,94,.08)",color:"#22c55e"},
+                      {label:"Storage Used",val:"31.02 GB",icon:"\u{1F4BE}",bg:"rgba(232,62,140,.08)",color:"#e74c8b"},
+                    ].map((s,i)=>(
+                      <div key={i} className="sch-storage-stat-card">
+                        <div>
+                          <div className="sch-storage-stat-label">{s.label}</div>
+                          <div className="sch-storage-stat-val">{s.val}</div>
+                        </div>
+                        <div className="sch-storage-stat-icon" style={{background:s.bg,color:s.color,fontSize:"18px"}}>{s.icon}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="sch-storage-bottom">
+                    <div className="sch-storage-chart">
+                      <div className="sch-storage-chart-title">Project Completion Trend</div>
+                      <div className="sch-storage-chart-sub">Monthly project completions over the past year</div>
+                      <div className="sch-storage-chart-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                        +18%
+                      </div>
+                      <svg viewBox="0 0 380 140" style={{width:"100%",height:"auto"}}>
+                        {[0,20,40,60,80].map((v,i)=><g key={i}><line x1="30" y1={120-i*25} x2="370" y2={120-i*25} stroke="#f0f0f3" strokeWidth="1"/><text x="24" y={124-i*25} textAnchor="end" fontSize="8" fill="#bbb" fontFamily="Sora,sans-serif">{v}</text></g>)}
+                        {["Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar"].map((m,i)=><text key={m} x={42+i*28.8} y={135} textAnchor="middle" fontSize="7" fill="#bbb" fontFamily="Sora,sans-serif">{m}</text>)}
+                        <defs><linearGradient id="storageGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity=".4"/><stop offset="100%" stopColor="#22c55e" stopOpacity="0"/></linearGradient></defs>
+                        <path d="M42,118 L70.8,118 L99.6,116 L128.4,114 L157.2,110 L186,98 L214.8,68 L243.6,38 L272.4,32 L301.2,45 L330,70 L358.8,65" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M42,118 L70.8,118 L99.6,116 L128.4,114 L157.2,110 L186,98 L214.8,68 L243.6,38 L272.4,32 L301.2,45 L330,70 L358.8,65 L358.8,120 L42,120Z" fill="url(#storageGrad)" opacity=".3"/>
+                      </svg>
+                    </div>
+                    <div className="sch-storage-overview">
+                      <div className="sch-storage-overview-title">Storage Overview</div>
+                      <div className="sch-donut-wrap">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                          <circle cx="60" cy="60" r="44" fill="none" stroke="#f0f0f3" strokeWidth="14"/>
+                          <circle cx="60" cy="60" r="44" fill="none" stroke="#a855f7" strokeWidth="14" strokeDasharray={`${0.62*2*Math.PI*44} ${2*Math.PI*44}`} strokeDashoffset="0" transform="rotate(-90 60 60)" strokeLinecap="round"/>
+                          <text x="60" y="56" textAnchor="middle" fontSize="16" fill="#1a1a2e" fontFamily="Sora,sans-serif" fontWeight="800">62%</text>
+                          <text x="60" y="70" textAnchor="middle" fontSize="9" fill="#999" fontFamily="Sora,sans-serif">Used</text>
+                        </svg>
+                      </div>
+                      <div className="sch-storage-usage">31.02 GB / 50.00 GB</div>
+                      <div className="sch-storage-remaining">18.98 GB remaining</div>
+                      {[
+                        {icon:"\u{1F465}",label:"Active Clients",sub:"Currently working with",val:"26"},
+                        {icon:"\u{1F4C5}",label:"This Month",sub:"Projects completed",val:"2"},
+                        {icon:"\u2B06\uFE0F",label:"Files Uploaded",sub:"This week",val:"820"},
+                      ].map((r,i)=>(
+                        <div key={i} className="sch-storage-info-row">
+                          <div className="sch-storage-info-left">
+                            <div className="sch-storage-info-icon" style={{background:"#f4f2ff",fontSize:"16px"}}>{r.icon}</div>
+                            <div>
+                              <div className="sch-storage-info-label">{r.label}</div>
+                              <div className="sch-storage-info-sub">{r.sub}</div>
+                            </div>
+                          </div>
+                          <div className="sch-storage-info-val">{r.val}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

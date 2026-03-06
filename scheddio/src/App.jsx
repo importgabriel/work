@@ -542,7 +542,7 @@ const CSS = `
   /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
   .sch-showcase-card.sch-bookings,
   .sch-showcase-card.sch-distrib,
-  .sch-showcase-card.sch-storage { max-width: 720px; }
+  .sch-showcase-card.sch-storage { max-width: 860px; }
   .sch-bookings { overflow: hidden; }
   .sch-bookings-layout { display: flex; gap: 0; height: 100%; }
   .sch-bookings-table { flex: 1.8; padding: 20px; overflow: hidden; min-width: 0; }
@@ -826,7 +826,7 @@ const CSS = `
     .sch-showcase-card { max-width: 480px; }
     .sch-showcase-card.sch-bookings,
     .sch-showcase-card.sch-distrib,
-    .sch-showcase-card.sch-storage { max-width: 520px; }
+    .sch-showcase-card.sch-storage { max-width: 580px; }
     .sch-bookings-layout { flex-direction: column; }
     .sch-bookings-sidebar { border-left: none; border-top: 1px solid #f0f0f3; }
     .sch-distrib-layout { flex-direction: column; }
@@ -1324,14 +1324,14 @@ export default function Scheddio() {
                         </span>
                       </div>
                       <div className="sch-bookings-cols">
-                        <span>User</span><span>Date &amp; Time</span><span>Action</span><span>Completed</span><span>Actions</span>
+                        <span>User</span><span>Date</span><span>Action</span><span>Completed</span><span>Actions</span>
                       </div>
                       {[
-                        { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026, 4:01 PM", action:"signup", status:"completed", bg:"#f59e0b" },
-                        { init:"M", name:"Maria Santos", email:"maria@example.com", id:1838, date:"3/3/2026, 9:17 AM", action:"login", status:"completed", bg:"rgb(93,50,239)" },
-                        { init:"D", name:"David Chen", email:"david@example.com", id:515, date:"3/3/2026, 9:03 AM", action:"login", status:"pending", bg:"#e74c8b" },
-                        { init:"S", name:"Sofia Martinez", email:"sofia@example.com", id:800, date:"2/27/2026, 11:46 AM", action:"signup", status:"completed", bg:"#22c55e" },
-                        { init:"L", name:"Liam Parker", email:"liam@example.com", id:912, date:"2/27/2026, 11:37 AM", action:"signup", status:"pending", bg:"#3b82f6" },
+                        { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026", action:"signup", status:"completed", bg:"#f59e0b" },
+                        { init:"M", name:"Maria Santos", email:"maria@example.com", id:1838, date:"3/3/2026", action:"login", status:"completed", bg:"rgb(93,50,239)" },
+                        { init:"D", name:"David Chen", email:"david@example.com", id:515, date:"3/3/2026", action:"login", status:"pending", bg:"#e74c8b" },
+                        { init:"S", name:"Sofia Martinez", email:"sofia@example.com", id:800, date:"2/27/2026", action:"signup", status:"completed", bg:"#22c55e" },
+                        { init:"L", name:"Liam Parker", email:"liam@example.com", id:912, date:"2/27/2026", action:"signup", status:"pending", bg:"#3b82f6" },
                       ].map((u, i) => (
                         <div key={i} className="sch-bookings-row">
                           <div className="sch-bookings-user">

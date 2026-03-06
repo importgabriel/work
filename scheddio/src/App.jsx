@@ -1324,7 +1324,7 @@ export default function Scheddio() {
                         </span>
                       </div>
                       <div className="sch-bookings-cols">
-                        <span>User</span><span>Date</span><span>Action</span><span>Completed</span><span>Actions</span>
+                        <span style={{paddingLeft:"36px"}}>User</span><span>Date</span><span>Action</span><span>Completed</span><span>Actions</span>
                       </div>
                       {[
                         { init:"A", name:"Alex Rivera", email:"alex@example.com", id:322, date:"3/3/2026", action:"signup", status:"completed", bg:"#f59e0b" },

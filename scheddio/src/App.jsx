@@ -540,7 +540,7 @@ const CSS = `
   }
 
   /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
-  .sch-showcase-card.sch-bookings,
+  .sch-showcase-card.sch-bookings { max-width: 1060px; }
   .sch-showcase-card.sch-distrib,
   .sch-showcase-card.sch-storage { max-width: 860px; }
   .sch-bookings { overflow: hidden; }

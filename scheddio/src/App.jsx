@@ -1675,10 +1675,6 @@ export default function Scheddio() {
                           {name:"Felix Bodner",email:"felixbodner@gmail.com",sales:"$9,247.45",orders:15,avg:"$616.50",top:true},
                           {name:"Phyllis Borenstein",email:"Phyllisborenstein@Keyes.com",sales:"$4,172.30",orders:14,avg:"$298.02",top:true},
                           {name:"Christa Harding",email:"harding000@yahoo.com",sales:"$3,722.90",orders:14,avg:"$265.92",top:true},
-                          {name:"Ms. Shuly Pfeffer",email:"pfeffer21@gmail.com",sales:"$3,631.40",orders:27,avg:"$134.50",top:true},
-                          {name:"Grant Freer",email:"grant@palmbeachpremierrealestate.com",sales:"$3,398.15",orders:16,avg:"$212.38",top:true},
-                          {name:"Ms. Patricia Sciarretta",email:"sciarrettabusinessopp@gmail.com",sales:"$3,271.40",orders:14,avg:"$233.67",top:true},
-                          {name:"Ashley Vielma",email:"ashleyvielma2001@gmail.com",sales:"$3,014.35",orders:23,avg:"$131.06",top:true},
                         ].map((c,i)=>(
                           <tr key={i}>
                             <td><div className="sch-sales-client-name">{c.name}</div><div className="sch-sales-client-email">{c.email}</div></td>

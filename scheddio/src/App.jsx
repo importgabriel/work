@@ -86,6 +86,12 @@ const features = [
     desc: "Keep tabs on your storage usage, project delivery stats, and file uploads — all from one dashboard. Never worry about running out of space.",
     highlights: ["Visual storage overview", "Project completion trends", "Active client tracking"],
   },
+  {
+    id: "sales-statistics",
+    title: "Sales Statistics",
+    desc: "Get a complete view of your revenue, orders, and top clients — all in one place. Track monthly trends and identify your highest-value relationships.",
+    highlights: ["Revenue & order tracking", "Monthly sales bar chart", "Top client leaderboard"],
+  },
 ];
 
 const steps = [
@@ -542,10 +548,12 @@ const CSS = `
   /* ═══════════════════════ ONLINE BOOKINGS ═══════════════════════ */
   .sch-showcase-card.sch-bookings,
   .sch-showcase-card.sch-distrib,
-  .sch-showcase-card.sch-storage { max-width: 100%; }
+  .sch-showcase-card.sch-storage,
+  .sch-showcase-card.sch-sales { max-width: 100%; }
   .sch-showcase-row:has(.sch-bookings) .sch-showcase-mockup,
   .sch-showcase-row:has(.sch-distrib) .sch-showcase-mockup,
-  .sch-showcase-row:has(.sch-storage) .sch-showcase-mockup { flex: 2; }
+  .sch-showcase-row:has(.sch-storage) .sch-showcase-mockup,
+  .sch-showcase-row:has(.sch-sales) .sch-showcase-mockup { flex: 2; }
   .sch-bookings { overflow: hidden; }
   .sch-bookings-layout { display: flex; gap: 0; height: 100%; }
   .sch-bookings-table { flex: 1.8; padding: 20px; overflow: hidden; min-width: 0; }
@@ -677,6 +685,49 @@ const CSS = `
   .sch-storage-info-label { font-size: 11px; font-weight: 600; color: #1a1a2e; }
   .sch-storage-info-sub { font-size: 9px; color: #999; }
   .sch-storage-info-val { font-size: 18px; font-weight: 800; color: #1a1a2e; }
+
+  /* ═══════════════════════ SALES STATISTICS ═══════════════════════ */
+  .sch-showcase-card.sch-sales { max-width: 100%; }
+  .sch-showcase-row:has(.sch-sales) .sch-showcase-mockup { flex: 2; }
+  .sch-sales { overflow: hidden; }
+  .sch-sales-top { display: flex; gap: 12px; padding: 20px 20px 0; }
+  .sch-sales-stat-card {
+    flex: 1; padding: 16px 18px; border-radius: 12px; background: #fff; border: 1px solid #f0f0f3;
+  }
+  .sch-sales-stat-icon {
+    width: 36px; height: 36px; border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; margin-bottom: 10px;
+  }
+  .sch-sales-stat-label { font-size: 11px; color: #888; font-weight: 500; margin-bottom: 4px; }
+  .sch-sales-stat-val { font-size: 24px; font-weight: 800; color: #1a1a2e; }
+
+  .sch-sales-chart { padding: 20px; }
+  .sch-sales-chart-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; }
+
+  .sch-sales-table-wrap { padding: 0 20px 20px; }
+  .sch-sales-table-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+  }
+  .sch-sales-table-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .sch-sales-search {
+    display: flex; align-items: center; gap: 6px; font-size: 11px; color: #bbb;
+    background: #fff; border: 1px solid #e0e0e5; border-radius: 8px; padding: 6px 14px;
+  }
+  .sch-sales-tbl { width: 100%; border-collapse: collapse; }
+  .sch-sales-tbl th {
+    font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+    padding: 0 10px 10px; border-bottom: 1px solid #f0f0f3; text-align: left;
+  }
+  .sch-sales-tbl td {
+    padding: 12px 10px; border-bottom: 1px solid #f5f5f7;
+    font-size: 12px; color: #444; white-space: nowrap;
+  }
+  .sch-sales-client-name { font-weight: 600; color: #1a1a2e; font-size: 12px; }
+  .sch-sales-client-email { font-size: 10px; color: #999; margin-top: 1px; }
+  .sch-sales-top-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 6px;
+    background: #fef9c3; color: #854d0e; font-size: 10px; font-weight: 600;
+  }
 
   /* ═══════════════════════ HOW IT WORKS ═══════════════════════ */
   .sch-how { background: linear-gradient(180deg, #fff 0%, #f4f2ff 100%); }
@@ -827,7 +878,12 @@ const CSS = `
     .sch-showcase-card { max-width: 480px; }
     .sch-showcase-card.sch-bookings,
     .sch-showcase-card.sch-distrib,
-    .sch-showcase-card.sch-storage { max-width: 100%; }
+    .sch-showcase-card.sch-storage,
+    .sch-showcase-card.sch-sales { max-width: 100%; }
+    .sch-sales-top { flex-wrap: wrap; }
+    .sch-sales-stat-card { flex: 1 1 calc(50% - 8px); }
+    .sch-sales-tbl { font-size: 10px; }
+    .sch-sales-tbl td { padding: 8px 6px; }
     .sch-bookings-layout { flex-direction: column; }
     .sch-bookings-sidebar { border-left: none; border-top: 1px solid #f0f0f3; }
     .sch-distrib-layout { flex-direction: column; }
@@ -875,6 +931,7 @@ export default function Scheddio() {
   const [feat5Ref, feat5Vis] = useInView(0.15);
   const [feat6Ref, feat6Vis] = useInView(0.15);
   const [feat7Ref, feat7Vis] = useInView(0.15);
+  const [feat8Ref, feat8Vis] = useInView(0.15);
   const [howRef, howVis] = useInView();
   const [statsRef, statsVis] = useInView();
   const [testRef, testVis] = useInView();
@@ -1546,6 +1603,93 @@ export default function Scheddio() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Row 8: Sales Statistics (reversed) ── */}
+            <div ref={feat8Ref} className={`sch-showcase-row reverse ${feat8Vis ? "in" : ""}`}>
+              <div className="sch-showcase-text">
+                <div className="sch-showcase-tag">Revenue</div>
+                <h3 className="sch-showcase-title">{features[7].title}</h3>
+                <p className="sch-showcase-desc">{features[7].desc}</p>
+                <ul className="sch-showcase-highlights">
+                  {features[7].highlights.map((h, i) => <li key={i}>{h}</li>)}
+                </ul>
+              </div>
+              <div className="sch-showcase-mockup">
+                <div className="sch-showcase-card sch-sales">
+                  <div className="sch-showcase-card-glow" />
+                  {/* ── Top stat cards ── */}
+                  <div className="sch-sales-top">
+                    {[
+                      {label:"Total Sales",val:"$221,076.20",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgb(93,50,239)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,bg:"rgba(93,50,239,.08)"},
+                      {label:"Total Orders",val:"1,306",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>,bg:"rgba(16,185,129,.08)"},
+                      {label:"Average Sales",val:"$169.28",icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,bg:"rgba(245,158,11,.08)"},
+                    ].map((s,i)=>(
+                      <div key={i} className="sch-sales-stat-card">
+                        <div className="sch-sales-stat-icon" style={{background:s.bg}}>{s.icon}</div>
+                        <div className="sch-sales-stat-label">{s.label}</div>
+                        <div className="sch-sales-stat-val">{s.val}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* ── Monthly Sales Bar Chart ── */}
+                  <div className="sch-sales-chart">
+                    <div className="sch-sales-chart-title">Monthly Sales</div>
+                    <svg viewBox="0 0 520 180" style={{width:"100%",height:"auto"}}>
+                      {[0,10000,20000,30000].map((v,i)=><g key={i}><line x1="40" y1={150-i*40} x2="500" y2={150-i*40} stroke="#f0f0f3" strokeWidth="1"/><text x="34" y={154-i*40} textAnchor="end" fontSize="8" fill="#bbb" fontFamily="Sora,sans-serif">${v===0?"$0":v>=1000?`$${v/1000}K`:v}</text></g>)}
+                      {["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=>{
+                        const vals=[12800,13200,18400,17600,15200,11800,10400,13600,9800,16200,14800,18600];
+                        const h=(vals[i]/30000)*120;
+                        const x=52+i*38;
+                        return <g key={m}>
+                          <rect x={x} y={150-h} width="24" height={h} rx="4" fill="rgb(93,50,239)"/>
+                          <text x={x+12} y={166} textAnchor="middle" fontSize="7" fill="#bbb" fontFamily="Sora,sans-serif">{m} 2025</text>
+                        </g>;
+                      })}
+                    </svg>
+                  </div>
+                  {/* ── Client Sales Statistics Table ── */}
+                  <div className="sch-sales-table-wrap">
+                    <div className="sch-sales-table-header">
+                      <div className="sch-sales-table-title">Client Sales Statistics</div>
+                      <div className="sch-sales-search">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Search by name or email...</span>
+                      </div>
+                    </div>
+                    <table className="sch-sales-tbl">
+                      <thead>
+                        <tr>
+                          <th>Client</th>
+                          <th>Sales (Total)</th>
+                          <th>Number of Orders</th>
+                          <th>Average Per Order</th>
+                          <th>Top Client</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          {name:"Felix Bodner",email:"felixbodner@gmail.com",sales:"$9,247.45",orders:15,avg:"$616.50",top:true},
+                          {name:"Phyllis Borenstein",email:"Phyllisborenstein@Keyes.com",sales:"$4,172.30",orders:14,avg:"$298.02",top:true},
+                          {name:"Christa Harding",email:"harding000@yahoo.com",sales:"$3,722.90",orders:14,avg:"$265.92",top:true},
+                          {name:"Ms. Shuly Pfeffer",email:"pfeffer21@gmail.com",sales:"$3,631.40",orders:27,avg:"$134.50",top:true},
+                          {name:"Grant Freer",email:"grant@palmbeachpremierrealestate.com",sales:"$3,398.15",orders:16,avg:"$212.38",top:true},
+                          {name:"Ms. Patricia Sciarretta",email:"sciarrettabusinessopp@gmail.com",sales:"$3,271.40",orders:14,avg:"$233.67",top:true},
+                          {name:"Ashley Vielma",email:"ashleyvielma2001@gmail.com",sales:"$3,014.35",orders:23,avg:"$131.06",top:true},
+                        ].map((c,i)=>(
+                          <tr key={i}>
+                            <td><div className="sch-sales-client-name">{c.name}</div><div className="sch-sales-client-email">{c.email}</div></td>
+                            <td>{c.sales}</td>
+                            <td style={{textAlign:"center"}}>{c.orders}</td>
+                            <td>{c.avg}</td>
+                            <td>{c.top && <span className="sch-sales-top-badge">Top Client</span>}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
